@@ -8,7 +8,8 @@ Created on Sat Oct 15 19:41:56 2016
 import cPickle
 import numpy as np
 import Feature_calc2 as Feature_calc
-windows = [10,15,30] # cant do 3 due to fft welch
+#windows = [10,15,30] # cant do 3 due to fft welch
+windows = [10,15,30]
 for sel in range(0,np.size(windows)):
     WS = windows[sel]# window size variable
     
@@ -199,41 +200,41 @@ for sel in range(0,np.size(windows)):
          
          
     """ --------------------Separate Channels ------------------------------------"""
-    for v in range(0,7): #
-        for i in range(0,x):
-             
-             np.save(s1_happy[i]+'_alpha_{0}'.format(v), hband["alpha{0}".format(i)][v,:])
-             np.save(s1_happy[i]+'_beta_{0}'.format(v), hband["beta{0}".format(i)][v,:])
-             np.save(s1_happy[i]+'_delta_{0}'.format(v), hband["delta{0}".format(i)][v,:])
-             np.save(s1_happy[i]+'_gamma_{0}'.format(v), hband["gamma{0}".format(i)][v,:])
-             np.save(s1_happy[i]+'_theta_{0}'.format(v), hband["theta{0}".format(i)][v,:])
-             
-        for j in range(0,y):
-             np.save(s1_sad[j]+'_alpha_{0}'.format(v), sband["alpha{0}".format(j)][v,:])
-             np.save(s1_sad[j]+'_beta_{0}'.format(v), sband["beta{0}".format(j)][v,:])
-             np.save(s1_sad[j]+'_delta_{0}'.format(v), sband["delta{0}".format(j)][v,:])
-             np.save(s1_sad[j]+'_gamma_{0}'.format(v), sband["gamma{0}".format(j)][v,:])
-             np.save(s1_sad[j]+'_theta_{0}'.format(v), sband["theta{0}".format(j)][v,:])
-        
-        for k in range(0,z):
-             np.save(s1_angry[k]+'_alpha_{0}'.format(v), aband["alpha{0}".format(k)][v,:])
-             np.save(s1_angry[k]+'_beta_{0}'.format(v), aband["beta{0}".format(k)][v,:])
-             np.save(s1_angry[k]+'_delta_{0}'.format(v), aband["delta{0}".format(k)][v,:])
-             np.save(s1_angry[k]+'_gamma_{0}'.format(v), aband["gamma{0}".format(k)][v,:])
-             np.save(s1_angry[k]+'_theta_{0}'.format(v), aband["theta{0}".format(k)][v,:])
+#    for v in range(0,7): #
+#        for i in range(0,x):
+#             
+#             np.save(s1_happy[i]+'_alpha_{0}'.format(v), hband["alpha{0}".format(i)][v,:])
+#             np.save(s1_happy[i]+'_beta_{0}'.format(v), hband["beta{0}".format(i)][v,:])
+#             np.save(s1_happy[i]+'_delta_{0}'.format(v), hband["delta{0}".format(i)][v,:])
+#             np.save(s1_happy[i]+'_gamma_{0}'.format(v), hband["gamma{0}".format(i)][v,:])
+#             np.save(s1_happy[i]+'_theta_{0}'.format(v), hband["theta{0}".format(i)][v,:])
+#             
+#        for j in range(0,y):
+#             np.save(s1_sad[j]+'_alpha_{0}'.format(v), sband["alpha{0}".format(j)][v,:])
+#             np.save(s1_sad[j]+'_beta_{0}'.format(v), sband["beta{0}".format(j)][v,:])
+#             np.save(s1_sad[j]+'_delta_{0}'.format(v), sband["delta{0}".format(j)][v,:])
+#             np.save(s1_sad[j]+'_gamma_{0}'.format(v), sband["gamma{0}".format(j)][v,:])
+#             np.save(s1_sad[j]+'_theta_{0}'.format(v), sband["theta{0}".format(j)][v,:])
+#        
+#        for k in range(0,z):
+#             np.save(s1_angry[k]+'_alpha_{0}'.format(v), aband["alpha{0}".format(k)][v,:])
+#             np.save(s1_angry[k]+'_beta_{0}'.format(v), aband["beta{0}".format(k)][v,:])
+#             np.save(s1_angry[k]+'_delta_{0}'.format(v), aband["delta{0}".format(k)][v,:])
+#             np.save(s1_angry[k]+'_gamma_{0}'.format(v), aband["gamma{0}".format(k)][v,:])
+#             np.save(s1_angry[k]+'_theta_{0}'.format(v), aband["theta{0}".format(k)][v,:])
              
     """ ---------------------------PSD seperate -------------------------------------------"""
-    
-    for v in range(0,7):
-        for i in range(0,x):
-             np.save(s1_happy[i]+'_psd_{0}'.format(v), hpsd["hpsdx{0}".format(i)][v,:])
-        
-        for j in range(0,y):
-             np.save(s1_sad[j]+'_psd_{0}'.format(v), spsd["spsdx{0}".format(j)][v,:])
-             
-        
-        for k in range(0,z):
-            np.save(s1_angry[k]+'_psd_{0}'.format(v), apsd["apsdx{0}".format(k)][v,:])
+#    
+#    for v in range(0,7):
+#        for i in range(0,x):
+#             np.save(s1_happy[i]+'_psd_{0}'.format(v), hpsd["hpsdx{0}".format(i)][v,:])
+#        
+#        for j in range(0,y):
+#             np.save(s1_sad[j]+'_psd_{0}'.format(v), spsd["spsdx{0}".format(j)][v,:])
+#             
+#        
+#        for k in range(0,z):
+#            np.save(s1_angry[k]+'_psd_{0}'.format(v), apsd["apsdx{0}".format(k)][v,:])
     
     """ ========================== Absolute Power ============================ """
     
@@ -412,3 +413,5 @@ for sel in range(0,np.size(windows)):
          
     valtest = np.append(valaFD,valhFD)
     varoustest = np.append(arousaFD,aroushFD)
+    print 'angry min %f max %f' %(np.min(valaFD), np.max(valaFD))
+    print 'happy min %f max %f' %( np.min(valhFD), np.max(valhFD))
