@@ -216,3 +216,214 @@ plt.plot(m3f2,m3p2[1,:],color='b',label='DEAP Processed PSD')
 plt.plot(m3f,rp15p[1,:],color='r',label='BR8 Processed PSD')
 plt.legend()
 
+#%%
+""" --------------------------------------------Band Pass ---------------------------------------------"""
+def alpha(M, Fs):  
+    """This function computes the band pass filter of all 5 frequency components of brain waves """
+    # bands delta(1-3), theta(4-7), alpha(8-13), beta(14-30), gamma(31-43)
+    nyq = 0.5*Fs
+    lowa = 8.0/nyq
+    higha = 13.0/nyq
+    
+    ba = signal.firwin(61,[lowa, higha],pass_zero=False,window='hamming')    
+    Malpha = signal.lfilter(ba,1.0,M, axis=1)
+    
+    lowb = 14.0/nyq
+    highb = 30.0/nyq
+    
+    bb = signal.firwin(61,[lowb, highb],pass_zero=False,window='hamming')	
+    Mbeta = signal.lfilter(bb,1.0,M, axis=1)
+    
+    lowd = 1.0/nyq
+    highd = 3.0/nyq
+    
+    bd = signal.firwin(61,[lowd, highd],pass_zero=False,window='hamming')    
+    Mdelta = signal.lfilter(bd,1.0,M, axis=1)
+        
+    lowg = 31.0/nyq
+    highg = 43.0/nyq
+    
+    bg = signal.firwin(61,[lowg, highg],pass_zero=False,window='hamming') 	
+    Mgamma = signal.lfilter(bg,1.0,M, axis=1)
+    
+    lowt = 4.0/nyq
+    hight = 7.0/nyq
+    
+    bt = signal.firwin(61,[lowt, hight],pass_zero=False,window='hamming')     
+    Mtheta = signal.lfilter(bt,1.0,M, axis=1)    
+    
+    return Malpha, Mbeta, Mdelta, Mgamma, Mtheta
+#%%
+
+br15a, br15b,br15d,br15g,br15t = alpha(rp15,Fs)
+br15f, br15a = Mpsd(br15a,Fs)
+br15f, br15b = Mpsd(br15b,Fs)
+br15f, br15d = Mpsd(br15d,Fs)
+br15f, br15g = Mpsd(br15g,Fs)
+br15f, br15t = Mpsd(br15t,Fs)
+
+plt.figure()
+plt.title('Power Bands')
+plt.subplot(5,1,1)
+plt.plot(m3f,br15a[1,:],color='g',label='BR8 Alpha')
+plt.legend()
+plt.subplot(5,1,2)
+plt.plot(m3f,br15b[1,:],color='r',label='BR8 Beta')
+plt.legend()
+plt.subplot(5,1,3)
+plt.plot(m3f,br15d[1,:],color='k',label='BR8 Delta')
+plt.legend()
+plt.subplot(5,1,4)
+plt.plot(m3f,br15g[1,:],color='b',label='BR8 Gamma')
+plt.legend()
+plt.subplot(5,1,5)
+plt.plot(m3f,br15t[1,:],color='k',label='BR8 Theta')
+plt.legend()
+plt.show()
+
+#%%
+def absolute_PSD(band):
+    """ This function calculates the total power in a given band, integrating to find the area under the curve.
+    band is the PSD array of the filterd alpha, beta, delta, gamma or theta signal. """
+    #low freq - lower limit of integrtion
+    #high freq - upper limit of integration
+    #PSD of band
+#    abs_psd = integrate.trapz(band,axis =1)
+    abs_psd = np.sum(band,axis=1)
+    power = np.sum(abs_psd)
+    
+    
+    return abs_psd, power
+#%%
+def abs_psd_feature(Live_matrix,Fs):
+    """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
+    can be used as a feature for the classifier. """
+    
+    Malph, Mbeta, Mdelta, Mgamma, Mtheta = alpha(Live_matrix,Fs)
+    psdfa, alphaa = Mpsd(Malph, Fs)
+    psdfb, beta = Mpsd(Mbeta, Fs)
+    psdfd, delta = Mpsd(Mdelta, Fs)
+    psdfg, gamma = Mpsd(Mgamma, Fs)
+    psdft, theta = Mpsd(Mtheta, Fs)
+    
+    alphaabs, powera = absolute_PSD(alphaa)
+    betaabs, powerb = absolute_PSD(beta)
+    deltaabs, powerd = absolute_PSD(delta)
+    gammaabs, powerg = absolute_PSD(gamma)
+    thetaabs, powert = absolute_PSD(theta)
+    x,y = np.shape(Live_matrix)
+    feature=np.zeros((1,8))
+    """Make a 9x5 array, each row is a channel PSD, each column is a frequency band """
+    feature = alphaabs.T
+    feature = np.append(feature, betaabs)
+    feature = np.append(feature, deltaabs)
+    feature = np.append(feature, gammaabs)
+    feature = np.append(feature, thetaabs)
+    feature= np.reshape(feature,(1,x*5))
+#    feature = powera
+#    feature = np.column_stack((feature, powerb))
+#    feature = np.column_stack((feature, powerd))
+#    feature = np.column_stack((feature, powerg))
+#    feature = np.column_stack((feature, powert))
+
+    return feature
+#%%
+
+absfeat = abs_psd_feature(rp15,Fs)
+plt.figure()
+plt.title('Absolute Power in each band for each channel')
+xval = np.arange(1,np.size(absfeat)+1)
+plt.stem(xval,absfeat[0,:])
+
+#%%
+def hfd(a, k_max):
+
+    r"""
+    Compute Higuchi Fractal Dimension of a time series.
+    Vectorised version of the eponymous [PYEEG]_ function.
+    .. note::
+        **Difference with PyEEG:**
+        Results is different from [PYEEG]_ which appears to have implemented an erroneous formulae.
+        [HIG88]_ defines the normalisation factor as:
+        .. math::
+            \frac{N-1}{[\frac{N-m}{k} ]\dot{} k}
+        [PYEEG]_ implementation uses:
+        .. math::
+            \frac{N-1}{[\frac{N-m}{k}]}
+        The latter does *not* give the expected fractal dimension of approximately `1.50` for brownian motion (see example bellow).
+    :param a: a one dimensional floating-point array representing a time series.
+    :type a: :class:`~numpy.ndarray` or :class:`~pyrem.time_series.Signal`
+    :param k_max: the maximal value of k
+    :type k_max: int
+    :return: Higuchi's fractal dimension; a scalar
+    :rtype: float
+    Example from [HIG88]_. This should produce a result close to `1.50`:
+    >>> import numpy as np
+    >>> import pyrem as pr
+    >>> i = np.arange(2 ** 15) +1001
+    >>> z = np.random.normal(size=int(2 ** 15) + 1001)
+    >>> y = np.array([np.sum(z[1:j]) for j in i])
+    >>> pr.univariate.hfd(y,2**8)
+    """
+
+    L = []
+    x = []
+    N = a.size
+
+
+    # TODO this could be used to pregenerate k and m idxs ... but memory pblem?
+    # km_idxs = np.triu_indices(k_max - 1)
+    # km_idxs = k_max - np.flipud(np.column_stack(km_idxs)) -1
+    # km_idxs[:,1] -= 1
+    #
+
+    for k in xrange(1,k_max):
+        Lk = 0
+        for m in xrange(0,k):
+            #we pregenerate all idxs
+            idxs = np.arange(1,int(np.floor((N-m)/k)),dtype=np.int32)
+
+            Lmk = np.sum(np.abs(a[m+idxs*k] - a[m+k*(idxs-1)]))
+            Lmk = (Lmk*(N - 1)/(((N - m)/ k)* k)) / k
+            Lk += Lmk
+
+
+        L.append(np.log(Lk/(m+1)))
+        x.append([np.log(1.0/ k), 1])
+
+    (p, r1, r2, s)=np.linalg.lstsq(x, L)
+    return p[0]
+#%%
+def hfd_valarous(M):
+    # higuchi fractal dimension
+    #'Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014'
+    x,y = np.shape(M)
+    k = 2**3
+    if x == 8:
+        
+        arous = hfd(M[5,:],k) #Ideally FC6 use PZ or C4
+        val = hfd(M[4,:],k)-hfd(M[3,:],k) #Ideally AF3-F4 we do C4-FP1
+    else: # if C4 is removed from matrix due to faulty sensor
+        arous = hfd(M[4,:],k) #Ideally FC6 use PZ or C4
+        val = hfd(M[4,:],k)-hfd(M[3,:],k)
+    
+    #(val-mi)/(mm-mi) # normalize to zero and 1
+    #(val*max-min) + min
+    minval = -0.15
+    maxval = 0.15
+    minarous = 1.30
+    maxarous = 2.0
+    
+    pval = (((val-minval)/(maxval-minval))*(8))+1
+    parous = (((arous-minarous)/(maxarous-minarous))*(4))+5
+    
+#    return arous, val
+    return parous,pval
+#%%
+arous,val = hfd_valarous(rp15)
+print "Arousal = %f , Valence = %f" %(arous,val)
+aroush,valh = hfd_valarous(m2)
+print "Arousal = %f , Valence = %f" %(aroush,valh)
+#n4 = preprocess(n4,Fs)
+arousa,vala = hfd_valarous(n4)
+print "Arousal = %f , Valence = %f" %(arousa,vala)
