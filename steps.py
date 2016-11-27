@@ -330,10 +330,14 @@ def abs_psd_feature(Live_matrix,Fs):
 #%%
 
 absfeat = abs_psd_feature(rp15,Fs)
+#'Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014'
+xtik = ['FP1A','FP1B','FP1D','FP1G','FP1T','FP2A','FP2B','FP2D','FP2G','FP2T','FZA','FZB','FZD','FZG','FZT','C3A','C3B','C3D','C3G','C3T','C4A','C4B','C4D','C4G','C4T','PZA','PZB','PZD','PZG','PZT','O1A','O1B','O1D','O1G','O1T','O2A','O2B','O2D','O2G','O2T']
 plt.figure()
 plt.title('Absolute Power in each band for each channel')
 xval = np.arange(1,np.size(absfeat)+1)
+plt.xticks(xval, xtik, rotation=90)
 plt.stem(xval,absfeat[0,:])
+plt.show()
 
 #%%
 def hfd(a, k_max):
