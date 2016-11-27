@@ -443,3 +443,32 @@ plt.text(1,1.2,"Sad")
 plt.xlabel("Valence")
 plt.ylabel("Arousal")
 plt.show()
+
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+#y=np.array([0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0])
+y = np.ones((8,np.size(t)))
+x = t
+for k in range(8,0,-1):
+#    ax.plot(x[:], happy102[k,:],y[k], label='parametric curve',zdir='z')
+    ax.plot(x[:],y[k-1]*k, m2[k-1,:], label='parametric curve',zdir='z')
+#    ax.legend()
+    ax.set_ylabel('Channel')
+    ax.set_xlabel('time in seconds')
+    ax.set_zlabel('Amplitude uV')
+#    ax.view_init(-40, 90)
+    
+    plt.show()
+    
+y2 = np.ones((8,np.size(m3f2)))    
+fig = plt.figure()
+ax = fig.gca(projection='3d')    
+for k in range(0,8):
+    ax.plot(m3f2[:],y2[k]*k, m3p2[k,:], label='parametric curve',zdir='z')
+#    ax.legend()
+    ax.set_ylabel('Channel')
+    ax.set_xlabel('Frequency')
+    ax.set_zlabel('Power')
+
+    plt.show()
