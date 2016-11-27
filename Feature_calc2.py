@@ -371,7 +371,7 @@ def play_wav(wav_filename, chunk_size=CHUNK_SIZE):
     return
 	
 def hfd(a, k_max):
-
+	# http://gilestrolab.github.io/pyrem/pyrem.univariate.html#pyrem.univariate.hfd
     r"""
     Compute Higuchi Fractal Dimension of a time series.
     Vectorised version of the eponymous [PYEEG]_ function.
