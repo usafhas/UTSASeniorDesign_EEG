@@ -333,12 +333,46 @@ absfeat = abs_psd_feature(rp15,Fs)
 #'Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014'
 xtik = ['FP1A','FP1B','FP1D','FP1G','FP1T','FP2A','FP2B','FP2D','FP2G','FP2T','FZA','FZB','FZD','FZG','FZT','C3A','C3B','C3D','C3G','C3T','C4A','C4B','C4D','C4G','C4T','PZA','PZB','PZD','PZG','PZT','O1A','O1B','O1D','O1G','O1T','O2A','O2B','O2D','O2G','O2T']
 plt.figure()
-plt.title('Absolute Power in each band for each channel')
+plt.title('Absolute Power in each band for each channel BR8')
 xval = np.arange(1,np.size(absfeat)+1)
 plt.xticks(xval, xtik, rotation=90)
 plt.stem(xval,absfeat[0,:])
 plt.show()
 
+
+absfeat2 = abs_psd_feature(m2,Fs)
+#'Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014'
+xtik = ['FP1A','FP1B','FP1D','FP1G','FP1T','FP2A','FP2B','FP2D','FP2G','FP2T','FZA','FZB','FZD','FZG','FZT','C3A','C3B','C3D','C3G','C3T','C4A','C4B','C4D','C4G','C4T','PZA','PZB','PZD','PZG','PZT','O1A','O1B','O1D','O1G','O1T','O2A','O2B','O2D','O2G','O2T']
+plt.figure()
+plt.title('Absolute Power in each band for each channel DEAP happy')
+xval = np.arange(1,np.size(absfeat)+1)
+plt.xticks(xval, xtik, rotation=90)
+plt.stem(xval,absfeat2[0,:])
+plt.show()
+
+n5 = np.load('C:/Users/Heath/Google Drive/UTSA/05_Fall 16/Senior Design/EEG_Project_Code/CODENAME_Duthess'+s1_angry[3]+'.npy')
+n5 = preprocess(n5,Fs)
+absfeat3 = abs_psd_feature(n5,Fs)
+#'Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014'
+xtik = ['FP1A','FP1B','FP1D','FP1G','FP1T','FP2A','FP2B','FP2D','FP2G','FP2T','FZA','FZB','FZD','FZG','FZT','C3A','C3B','C3D','C3G','C3T','C4A','C4B','C4D','C4G','C4T','PZA','PZB','PZD','PZG','PZT','O1A','O1B','O1D','O1G','O1T','O2A','O2B','O2D','O2G','O2T']
+plt.figure()
+plt.title('Absolute Power in each band for each channel DEAP angry')
+xval = np.arange(1,np.size(absfeat)+1)
+plt.xticks(xval, xtik, rotation=90)
+markerline, stemlines, baseline = plt.stem(xval,absfeat3[0,:],color='r')
+plt.setp(markerline, 'markerfacecolor', 'r')
+plt.show()
+
+plt.figure()
+plt.title('Absolute Power in each band for each channel DEAP happy v angry')
+xval = np.arange(1,np.size(absfeat)+1)
+plt.xticks(xval, xtik, rotation=90)
+markerline, stemlines, baseline = plt.stem(xval,absfeat2[0,:],color='b',label='Happy')
+plt.setp(markerline, 'markerfacecolor', 'b')
+markerline2, stemlines2, baseline2 = plt.stem(xval,absfeat3[0,:],color='r',label='Angry')
+plt.setp(markerline2, 'markerfacecolor', 'r')
+plt.legend()
+plt.show()
 #%%
 def hfd(a, k_max):
 
@@ -476,3 +510,46 @@ for k in range(0,8):
     ax.set_zlabel('Power')
 
     plt.show()
+	
+#%%
+
+win = signal.get_window('hanning',int(Fs))
+f, t, S = signal.spectrogram(m2,Fs,window=win,nperseg=Fs,noverlap=Fs/2)
+x,y,z = np.shape(S)
+# channels, frequencies, time
+
+plt.figure()
+for k in range(0,x):
+    plt.subplot(2,4,k+1)
+    plt.pcolormesh(t, f, S[k,:,:])
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [sec]')
+plt.show()
+
+spec_feat = np.sum(np.sum(S,axis=2),axis = 0)
+
+plt.figure()
+fr = np.arange(0,65)
+plt.plot(fr,spec_feat)
+
+fc,pc = signal.csd(S[:,:,0],S[:,:,z-1],Fs)
+
+#%%
+#zijings formulas
+# Frequency Variability
+# https://github.com/ZijingMao/baselineeegtest/blob/master/BaselineTest/FeatureUtility/freq_var.m
+fv1 = np.sum(np.multiply(m3p2,np.multiply(m3f2,m3f2)),axis=1)
+fv2 = np.square(np.sum(np.multiply(m3p2,m3f2),axis=1))/np.sum(m3p2,axis=1)
+fv3 = np.sum(m3p2,axis=1)
+
+FV = (fv1-fv2)/fv3
+FV = np.reshape(FV,(1,8))
+
+# Center of Gravity
+"""
+CGF=(sum(pxx.*f))/(sum(pxx));
+https://en.wikipedia.org/wiki/Spectral_centroid
+"""
+cog = np.sum(np.multiply(m3p2,m3f2),axis=1)/np.sum(m3p2,axis=1)
+cog = np.reshape(cog,(1,8))
+# https://docs.scipy.org/doc/numpy/reference/generated/numpy.squeeze.html
