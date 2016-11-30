@@ -130,7 +130,7 @@ def preprocess(M,Fs):
         mm = np.max(Mpre[k,:])
         mi = np.min(Mpre[k,:])
         M_normalized[k,:] = (Mpre[k,:]-mi)/(mm-mi) # normalize to zero and 1
-        M_normalized[k,:] = (M_normalized[k,:]*2) -1 # change range from -1 to 1 range = 1--1 + min
+        M_normalized[k,:] = (M_normalized[k,:]*2) -1 # change range from -1 to 1 range = (val*max-min) + min
 		#http://stackoverflow.com/questions/10364575/normalization-in-variable-range-x-y-in-matlab
     if x == 9:
         np.delete(M_normalized, (8), axis = 0)
@@ -153,6 +153,17 @@ def Mpsd(M,Fs):
     psdf, psdx = signal.welch(M,Fs,window = win,nperseg=4*Fs, noverlap = 2*Fs,axis=1)
     
     return psdf, psdx
+    
+    
+def spec(M,Fs):
+    win = signal.get_window('hanning',int(Fs))
+    f, t, S = signal.spectrogram(M,Fs,window=win,nperseg=Fs,noverlap=Fs/2)
+    x,y,z = np.shape(S)
+    # channels, frequencies, time
+
+    spec_feat = np.sum(np.sum(S,axis=2),axis = 0)
+    
+    return spec_feat
 
 """ --------------------------------------------Band Pass ---------------------------------------------"""
 def alpha(M, Fs):  
@@ -162,31 +173,31 @@ def alpha(M, Fs):
     lowa = 8.0/nyq
     higha = 13.0/nyq
     
-	ba = signal.firwin(61,[lowa, higha],pass_zero=False,window='hamming')    
+    ba = signal.firwin(61,[lowa, higha],pass_zero=False,window='hamming')    
     Malpha = signal.lfilter(ba,1.0,M, axis=1)
     
     lowb = 14.0/nyq
     highb = 30.0/nyq
     
-	bb = signal.firwin(61,[lowb, highb],pass_zero=False,window='hamming')	
+    bb = signal.firwin(61,[lowb, highb],pass_zero=False,window='hamming')	
     Mbeta = signal.lfilter(bb,1.0,M, axis=1)
     
     lowd = 1.0/nyq
     highd = 3.0/nyq
     
-	bd = signal.firwin(61,[lowd, highd],pass_zero=False,window='hamming')    
+    bd = signal.firwin(61,[lowd, highd],pass_zero=False,window='hamming')    
     Mdelta = signal.lfilter(bd,1.0,M, axis=1)
         
     lowg = 31.0/nyq
     highg = 43.0/nyq
     
-	bg = signal.firwin(61,[lowg, highg],pass_zero=False,window='hamming') 	
+    bg = signal.firwin(61,[lowg, highg],pass_zero=False,window='hamming') 	
     Mgamma = signal.lfilter(bg,1.0,M, axis=1)
     
     lowt = 4.0/nyq
     hight = 7.0/nyq
     
-	bt = signal.firwin(61,[lowt, hight],pass_zero=False,window='hamming')     
+    bt = signal.firwin(61,[lowt, hight],pass_zero=False,window='hamming')     
     Mtheta = signal.lfilter(bt,1.0,M, axis=1)    
     
     return Malpha, Mbeta, Mdelta, Mgamma, Mtheta
@@ -249,8 +260,36 @@ def Band_PSD(Live_matrix,Fs):
     psdft, theta = Mpsd(Mtheta, Fs)
 
     return alphaa, beta, delta, gamma, theta
+    
+    
+def CoG(psdf,Mpsd):   
+    x,y = np.shape(Mpsd)
+    #zijings formulas
+    # Frequency Variability
+    # https://github.com/ZijingMao/baselineeegtest/blob/master/BaselineTest/FeatureUtility/freq_var.m
+    fv1 = np.sum(np.multiply(Mpsd,np.multiply(psdf,psdf)),axis=1)
+    fv2 = np.square(np.sum(np.multiply(Mpsd,psdf),axis=1))/np.sum(Mpsd,axis=1)
+    fv3 = np.sum(Mpsd,axis=1)
+    
+    FV = (fv1-fv2)/fv3
+    FV = np.reshape(FV,(1,x))
+    
+    # Center of Gravity
+    """
+    CGF=(sum(pxx.*f))/(sum(pxx));
+    https://en.wikipedia.org/wiki/Spectral_centroid
+    """
+    cog = np.sum(np.multiply(Mpsd,psdf),axis=1)/np.sum(Mpsd,axis=1)
+    cog = np.reshape(cog,(1,x))
+    # https://docs.scipy.org/doc/numpy/reference/generated/numpy.squeeze.html
+    cogfv = np.append(cog,FV)
+    cogfv = np.reshape(cogfv,(1,2*x))
+    
+    return cogfv
 
 #%% Non Power Features =====================================================================	
+
+    
 def hfd_valarous(M):
     # higuchi fractal dimension
     #'Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014'
@@ -283,17 +322,6 @@ def hfd_feat(M):
     for i in range(0,x):
         feat[0,i] = hfd(M[i,:],7)# 7 got a good value
     
-    return feat
-    
-def hfd_specfeat(M):
-    feat = []
-    f, t, S = signal.spectrogram(M)
-    x,y,z = np.shape(S)
-    for i in range(0,z):
-        for k in range(0,x):
-            ch = hfd(S[k,:,i],7)
-            feat = np.append(feat,ch)
-
     return feat
     
 def DLAT(M,Fs):
@@ -528,3 +556,88 @@ def init_liveplot(lx,lyl, lyu, title):
     line8, = axarr[3,1].plot([],[]) 
 
     return axarr, line1, line2, line3, line4, line5, line6,line7,line8
+    
+def valence(M,Fs):
+#    valence = alphapowerF4/betapowerF4 − alphapowerF3/betapowerF3
+    pwr = abs_psd_feature(M,Fs)
+    
+    val = pwr[1,0]/pwr[1,1]-pwr[0,0]/pwr[0,1]
+
+    return val
+
+def arrousal(M,Fs):
+#    betapower/alphapower
+#    AF3, AF4, F3 and F4
+    
+    pwr = abs_psd_feature(M,Fs)
+    
+    arous= pwr[0,1]/pwr[0,0]+pwr[1,1]/pwr[1,0]
+
+    return arous
+    
+def val_arr(val, arous):
+    #map new values
+    #valence min max
+    x = np.size(val)
+    vnew = np.zeros(x)
+    nmin = 1
+    nmax = 9
+    vmin = -1.1760520779446892e-08
+    vmax = 1.2049364173094546e-08
+    for i in range(0,x):
+        vnew[i]= (((val[i]-vmin)*8.0)/(vmax-vmin))+nmin
+    
+    amin = 1.6912322617992066
+    amax = 1.6912322873573835
+    anew = np.zeros(x)
+    for i in range(0,x):
+        anew[i] = (((arous[i] - amin)*8.0)/(amax-amin))+amin
+
+#    plt.figure()
+#    plt.scatter(vnew,anew)
+
+    
+    return vnew,anew
+
+def grad_valarr(val,arous):
+    
+    cntr = np.array([[4.616039130111130540e+00,	3.617018511032969119e+00],
+    [2.656645223998772565e+00,	6.509345723874560008e+00],
+    [3.996513754466108903e+00,	9.602510485671338358e+00],
+    [1.517583631011820033e+00,	2.119435356515868563e+00],
+    [3.500399103530070555e+00,	6.865174590745099614e+00],
+    [1.059892933872066401e+00,	6.367655390824551453e+00],
+    [5.239028833157542309e+00,	5.590474453016032186e+00],
+    [2.868149752654127305e+00,	4.824500596840480604e+00],
+    [1.661684742625120892e+00,	8.352000798208161214e+00],
+    [1.200746213815266028e+00,	4.494805858353481121e+00],
+    [8.791944706099824813e+00,	4.334600784278328511e+00],
+    [4.995377969162958287e+00,	5.076538443198944428e+00],
+    [7.312515524951821000e+00,	6.611169287672306716e+00],
+    [4.214746234433144778e+00,	4.777145027255929044e+00],
+    [5.354115247619907869e+00,	6.233996315761296536e+00],
+    [5.775897714924785653e+00,	5.997130228868107871e+00]])
+    
+    newdata = np.array([[val,arous]])
+    u, u0, d, jm, p, fpc = fuzz.cluster.cmeans_predict(newdata.T, cntr, 2, error=0.005, maxiter=1000)
+    cluster_membership = np.argmax(u, axis=0)  # Hardening for visualization
+    aser = [1,5,7,8,10,11,12,14]
+    uang = u[aser]
+    hser = [0,2,3,4,6,9,13,15]
+    uhapp = u[hser]
+    pangry = np.sum(uang)
+    phappy = np.sum(uhapp)
+
+    print "Percent angry = %f Percent happy = %f" %((pangry*100), (phappy*100))
+
+    return (pangry*100), (phappy*100)
+    
+def valPlot(M,Fs):
+    val = valence(M,Fs)
+    arous = arrousal(M,Fs)
+    
+    vnew,anew = val_arr(val,arous)
+    pangry, hangry = grad_valarr(val,arous)
+    x = (1-pangry)*8+1
+    y = (1-pangry)*4.5+4.5
+    return x,y

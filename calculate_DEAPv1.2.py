@@ -47,12 +47,6 @@ for sel in range(0,np.size(windows)):
     #Sz = 3*128 # window Size
     """ --------------------------------------------------------------- """
     
-    """ --------------------- Power Spectral Density ------------------"""
-    #S01t1_happy = Feature_calc.preprocess(S01t1_happy, Fs)
-    #psdf, S01t1_happy_psdx = Feature_calc.Mpsd(S01t1_happy, Fs)
-    #np.save('./Data/Training/S01t1_happy_W3O_PSD',S01t1_happy_psdx)
-    #np.save('./Data/Training/psdf', psdf)
-    
     """ ---------------------  PSD ------------------------"""
     hpsd ={}
     for i in range(0,x):
@@ -155,7 +149,7 @@ for sel in range(0,np.size(windows)):
         
     for i in range(0,x):
          hband["alpha_sum{0}".format(i)] = np.sum(hband["alpha{0}".format(i)], axis=0)
-         hband["beta_sum{0}".format(i)] = np.sum(hband["beta{0}".format(i)], axis=0)
+#         hband["beta_sum{0}".format(i)] = np.sum(hband["beta{0}".format(i)], axis=0)
          hband["delta_sum{0}".format(i)] = np.sum(hband["delta{0}".format(i)], axis=0)
          hband["gamma_sum{0}".format(i)] = np.sum(sband["gamma{0}".format(j)], axis=0)
          hband["theta_sum{0}".format(i)] = np.sum(sband["theta{0}".format(j)], axis=0)
@@ -163,14 +157,14 @@ for sel in range(0,np.size(windows)):
          hband["theta_gamma{0}".format(i)] = zip(hband["theta_sum{0}".format(i)],hband["gamma_sum{0}".format(i)])
          np.save(s1_happy[i]+'_theta_gamma',hband["theta_gamma{0}".format(i)])
          np.save(s1_happy[i]+'_alpha_sum', hband["alpha_sum{0}".format(i)])
-         np.save(s1_happy[i]+'_beta_sum', hband["beta_sum{0}".format(i)])
+#         np.save(s1_happy[i]+'_beta_sum', hband["beta_sum{0}".format(i)])
          np.save(s1_happy[i]+'_delta_sum', hband["delta_sum{0}".format(i)])
          np.save(s1_happy[i]+'_gamma_sum', hband["gamma_sum{0}".format(i)])
          np.save(s1_happy[i]+'_theta_sum', hband["theta_sum{0}".format(i)])
          
     for j in range(0,y):
          sband["alpha_sum{0}".format(j)] = np.sum(sband["alpha{0}".format(j)],axis=0) 
-         sband["beta_sum{0}".format(j)] = np.sum(sband["beta{0}".format(j)], axis=0)
+#         sband["beta_sum{0}".format(j)] = np.sum(sband["beta{0}".format(j)], axis=0)
          sband["delta_sum{0}".format(j)] = np.sum(sband["delta{0}".format(j)], axis=0)
          sband["gamma_sum{0}".format(j)] = np.sum(sband["gamma{0}".format(j)],axis=0) 
          sband["theta_sum{0}".format(j)] = np.sum(sband["theta{0}".format(j)],axis=0)
@@ -178,14 +172,14 @@ for sel in range(0,np.size(windows)):
          sband["theta_gamma{0}".format(j)] = zip(sband["theta_sum{0}".format(j)],sband["gamma_sum{0}".format(j)])
          np.save(s1_sad[j]+'_theta_gamma',sband["theta_gamma{0}".format(j)])
          np.save(s1_sad[j]+'_alpha_sum', sband["alpha_sum{0}".format(j)])
-         np.save(s1_sad[j]+'_beta_sum', sband["beta_sum{0}".format(j)])
+#         np.save(s1_sad[j]+'_beta_sum', sband["beta_sum{0}".format(j)])
          np.save(s1_sad[j]+'_delta_sum', sband["delta_sum{0}".format(j)])
          np.save(s1_sad[j]+'_gamma_sum', sband["gamma_sum{0}".format(j)])
          np.save(s1_sad[j]+'_theta_sum', sband["theta_sum{0}".format(j)])
          
     for k in range(0,z):
          aband["alpha_sum{0}".format(k)] = np.sum(aband["alpha{0}".format(k)],axis=0)
-         aband["beta_sum{0}".format(k)] = np.sum(aband["beta{0}".format(k)],axis=0)
+#         aband["beta_sum{0}".format(k)] = np.sum(aband["beta{0}".format(k)],axis=0)
          aband["delta_sum{0}".format(k)] = np.sum(aband["delta{0}".format(k)],axis=0)
          aband["gamma_sum{0}".format(k)] = np.sum(aband["gamma{0}".format(k)],axis=0)
          aband["theta_sum{0}".format(k)] = np.sum(aband["theta{0}".format(k)],axis=0)
@@ -193,48 +187,10 @@ for sel in range(0,np.size(windows)):
          aband["theta_gamma{0}".format(k)] = zip(aband["theta_sum{0}".format(k)],aband["gamma_sum{0}".format(k)])
          np.save(s1_angry[k]+'_theta_gamma', aband["theta_gamma{0}".format(k)])
          np.save(s1_angry[k]+'_alpha_sum', aband["alpha_sum{0}".format(k)])
-         np.save(s1_angry[k]+'_beta_sum', aband["beta_sum{0}".format(k)])
+#         np.save(s1_angry[k]+'_beta_sum', aband["beta_sum{0}".format(k)])
          np.save(s1_angry[k]+'_delta_sum', aband["delta_sum{0}".format(k)])
          np.save(s1_angry[k]+'_gamma_sum', aband["gamma_sum{0}".format(k)])
          np.save(s1_angry[k]+'_theta_sum', aband["theta_sum{0}".format(k)])
-         
-         
-    """ --------------------Separate Channels ------------------------------------"""
-#    for v in range(0,7): #
-#        for i in range(0,x):
-#             
-#             np.save(s1_happy[i]+'_alpha_{0}'.format(v), hband["alpha{0}".format(i)][v,:])
-#             np.save(s1_happy[i]+'_beta_{0}'.format(v), hband["beta{0}".format(i)][v,:])
-#             np.save(s1_happy[i]+'_delta_{0}'.format(v), hband["delta{0}".format(i)][v,:])
-#             np.save(s1_happy[i]+'_gamma_{0}'.format(v), hband["gamma{0}".format(i)][v,:])
-#             np.save(s1_happy[i]+'_theta_{0}'.format(v), hband["theta{0}".format(i)][v,:])
-#             
-#        for j in range(0,y):
-#             np.save(s1_sad[j]+'_alpha_{0}'.format(v), sband["alpha{0}".format(j)][v,:])
-#             np.save(s1_sad[j]+'_beta_{0}'.format(v), sband["beta{0}".format(j)][v,:])
-#             np.save(s1_sad[j]+'_delta_{0}'.format(v), sband["delta{0}".format(j)][v,:])
-#             np.save(s1_sad[j]+'_gamma_{0}'.format(v), sband["gamma{0}".format(j)][v,:])
-#             np.save(s1_sad[j]+'_theta_{0}'.format(v), sband["theta{0}".format(j)][v,:])
-#        
-#        for k in range(0,z):
-#             np.save(s1_angry[k]+'_alpha_{0}'.format(v), aband["alpha{0}".format(k)][v,:])
-#             np.save(s1_angry[k]+'_beta_{0}'.format(v), aband["beta{0}".format(k)][v,:])
-#             np.save(s1_angry[k]+'_delta_{0}'.format(v), aband["delta{0}".format(k)][v,:])
-#             np.save(s1_angry[k]+'_gamma_{0}'.format(v), aband["gamma{0}".format(k)][v,:])
-#             np.save(s1_angry[k]+'_theta_{0}'.format(v), aband["theta{0}".format(k)][v,:])
-             
-    """ ---------------------------PSD seperate -------------------------------------------"""
-#    
-#    for v in range(0,7):
-#        for i in range(0,x):
-#             np.save(s1_happy[i]+'_psd_{0}'.format(v), hpsd["hpsdx{0}".format(i)][v,:])
-#        
-#        for j in range(0,y):
-#             np.save(s1_sad[j]+'_psd_{0}'.format(v), spsd["spsdx{0}".format(j)][v,:])
-#             
-#        
-#        for k in range(0,z):
-#            np.save(s1_angry[k]+'_psd_{0}'.format(v), apsd["apsdx{0}".format(k)][v,:])
     
     """ ========================== Absolute Power ============================ """
     
@@ -286,91 +242,34 @@ for sel in range(0,np.size(windows)):
     
         apwr["angry_PP{0}".format(k)] = np.hstack((apwr["angry_sum{0}".format(k)],apsd["apsdx_sum{0}".format(k)]))
         np.save(s1_angry[k]+'_PP', apwr["angry_PP{0}".format(k)])
+
+    """==================================== Center of Gravity and Frequency variability """
     
+    hcog ={}
+    for i in range(0,x):
+         hcog["happy{0}".format(i)] = Feature_calc.CoG(hpsd["hpsdf{0}".format(i)], hpsd["hpsdx{0}".format(i)])
+         np.save(s1_happy[i]+'_cog', hcog["happy{0}".format(i)])
+    scog={}
+    for j in range(0,y):
+         scog["sad{0}".format(j)] = Feature_calc.CoG(spsd["spsdf{0}".format(j)], spsd["spsdx{0}".format(j)])
+         np.save(s1_sad[j]+'_cog', scog["sad{0}".format(j)])
+         
+    acog={}
+    for k in range(0,z):
+        acog["angry{0}".format(k)] = Feature_calc.CoG(apsd["apsdf{0}".format(k)], apsd["apsdx{0}".format(k)])
+        np.save(s1_angry[k]+'_cog', acog["angry{0}".format(k)])
     
-    """ ======================= DLAT ================================================="""
-    #hdlat = {}
-    #for i in range(0,x):
-    #     hdlat["happy{0}".format(i)]=Feature_calc.DLAT(hpsd["hpsdx{0}".format(i)], Fs)
-    #     np.save(s1_happy[i]+'_dlatpsd', hdlat["happy{0}".format(i)])
-    #sdlat = {}
-    #for j in range(0,y):
-    #     sdlat["sad{0}".format(j)]=Feature_calc.DLAT(spsd["spsdx{0}".format(j)], Fs)
-    #     np.save(s1_sad[j]+'_dlatpsd', sdlat["sad{0}".format(j)])
-    #     
-    #adlat = {}
-    #for k in range(0,z):
-    #     adlat["angry{0}".format(k)]=Feature_calc.DLAT(apsd["apsdx{0}".format(k)], Fs)
-    #     np.save(s1_angry[k]+'_dlatpsd', adlat["angry{0}".format(k)])
-    #
-    #     
-    #     
-    #"""================ PSD power and DLAT/DCAU ================================="""
-    #     
-    #     
-    #for i in range(0,x):
-    #     hpwr["happy_PPD{0}".format(i)]=np.hstack((hpwr["happy_PP{0}".format(i)],np.sum(hdlat["happy{0}".format(i)],axis=0)))
-    #     np.save(s1_happy[i]+'_PPD', hpwr["happy_PPD{0}".format(i)])
-    #
-    #for j in range(0,y):
-    #     spwr["sad_PPD{0}".format(j)]=np.hstack((spwr["sad_PP{0}".format(j)],np.sum(sdlat["sad{0}".format(j)],axis=0)))
-    #     np.save(s1_sad[j]+'_PPD', spwr["sad_PPD{0}".format(j)])
-    #
-    #for k in range(0,z):
-    #
-    #    apwr["angry_PPD{0}".format(k)] = np.hstack((apwr["angry_PP{0}".format(k)],np.sum(adlat["angry{0}".format(k)],axis=0)))
-    #    np.save(s1_angry[k]+'_PPD', apwr["angry_PPD{0}".format(k)])     
-        
-        
-        
-#    """=================== Valance and Arrousal ================================="""
-#    hva = {}
-#    hv = []
-#    ha = []
-#    for i in range(0,x):
-#         hva["happyv{0}".format(i)]=Feature_calc.valence(h["happy{0}".format(i)], Fs)
-#         np.save(s1_happy[i]+'_val', hva["happyv{0}".format(i)])
-#         hva["happya{0}".format(i)]=Feature_calc.arrousal(h["happy{0}".format(i)], Fs)
-#         np.save(s1_happy[i]+'_arrous', hva["happya{0}".format(i)])
-#    
-#         hv = np.append(hv,hva["happyv{0}".format(i)])
-#    
-#         ha = np.append(ha,hva["happya{0}".format(i)])
-#         
-#    sva = {}
-#    sv = []
-#    sa =[]
-#    for j in range(0,y):
-#         sva["sadv{0}".format(j)]=Feature_calc.valence(s["sad{0}".format(j)], Fs)
-#         np.save(s1_sad[j]+'_val', sva["sadv{0}".format(j)])
-#         sva["sada{0}".format(j)]=Feature_calc.arrousal(s["sad{0}".format(j)], Fs)
-#         np.save(s1_sad[j]+'_arrous', sva["sada{0}".format(j)])
-#         
-#         sv = np.append(sv,sva["sadv{0}".format(j)])
-#         
-#         sa = np.append(sa,sva["sada{0}".format(j)])
-#         
-#    ava = {}
-#    av =[]
-#    avaa=[]
-#    for k in range(0,z):
-#         ava["angryv{0}".format(k)]=Feature_calc.valence(a["angry{0}".format(k)], Fs)
-#         np.save(s1_angry[k]+'_val', ava["angryv{0}".format(k)])
-#         ava["angrya{0}".format(k)]=Feature_calc.arrousal(a["angry{0}".format(k)], Fs)
-#         np.save(s1_angry[k]+'_val', ava["angrya{0}".format(k)])
-#         
-#         
-#         av = np.append(av, ava["angryv{0}".format(k)])
-#         
-#         avaa = np.append(avaa,ava["angrya{0}".format(k)] )
-#         
-#    Feature_calc.val_arr(av, avaa)
-#    Feature_calc.val_arr(hv, ha)
-#    
-#    np.save('./Data/angryvalence',av)
-#    np.save('./Data/angryarrousal',avaa)
-#    np.save('./Data/happyvalence',hv)
-#    np.save('./Data/happyarrousal',ha)
+    """ Spectrogram avearge over time=================="""
+    
+    for i in range(0,x):
+         hpsd["hspec{0}".format(i)] = Feature_calc.spec(h["happy{0}".format(i)], Fs)
+         np.save(s1_happy[i]+'_spec', hpsd["hspec{0}".format(i)])
+    for j in range(0,y):
+         spsd["sspec{0}".format(j)] = Feature_calc.spec(s["sad{0}".format(j)], Fs)
+         np.save(s1_sad[j]+'_spec', spsd["sspec{0}".format(j)])
+    for k in range(0,z):
+        apsd["aspec{0}".format(k)] = Feature_calc.spec(a["angry{0}".format(k)], Fs)
+        np.save(s1_angry[k]+'_spec', apsd["aspec{0}".format(k)])
     
     """ ========================= Fractal Dimension =============================="""
     #import Feature_calc # calculate features from LSL
@@ -390,8 +289,7 @@ for sel in range(0,np.size(windows)):
          valhFD.append(hFD["happyv{0}".format(i)])
          hFD["happy{0}".format(i)]=Feature_calc.hfd_feat(h["happy{0}".format(i)])
          np.save(s1_happy[i]+'_HFD', hFD["happy{0}".format(i)])
-         hFD["happy2{0}".format(i)]=Feature_calc.hfd_specfeat(h["happy{0}".format(i)])
-         np.save(s1_happy[i]+'_HFDspec', hFD["happy2{0}".format(i)])
+
     
     for j in range(0,y):
          sFD["sada{0}".format(j)], sFD["sadv{0}".format(j)]=Feature_calc.hfd_valarous(s["sad{0}".format(j)])
@@ -399,8 +297,7 @@ for sel in range(0,np.size(windows)):
          valsFD.append(sFD["sadv{0}".format(j)])
          sFD["sad{0}".format(j)]=Feature_calc.hfd_feat(s["sad{0}".format(j)])
          np.save(s1_sad[j]+'_HFD', sFD["sad{0}".format(j)])
-         sFD["sad2{0}".format(j)]=Feature_calc.hfd_specfeat(s["sad{0}".format(j)])
-         np.save(s1_sad[j]+'_HFDspec', sFD["sad2{0}".format(j)])
+
     
     for k in range(0,z):
          aFD["angrya{0}".format(k)], aFD["angryv{0}".format(k)]=Feature_calc.hfd_valarous(a["angry{0}".format(k)])
@@ -408,8 +305,7 @@ for sel in range(0,np.size(windows)):
          valaFD.append(aFD["angryv{0}".format(k)])
          aFD["angry{0}".format(k)]=Feature_calc.hfd_feat(a["angry{0}".format(k)])
          np.save(s1_angry[k]+'_HFD', aFD["angry{0}".format(k)])
-         aFD["angry2{0}".format(k)]=Feature_calc.hfd_specfeat(a["angry{0}".format(k)])
-         np.save(s1_angry[k]+'_HFDspec', aFD["angry2{0}".format(k)])
+
          
     valtest = np.append(valaFD,valhFD)
     varoustest = np.append(arousaFD,aroushFD)

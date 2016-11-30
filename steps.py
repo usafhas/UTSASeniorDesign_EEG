@@ -82,7 +82,7 @@ def preprocess(M,Fs):
     if x == 9:
         np.delete(M_normalized, (8), axis = 0)
     #M_normalized[8,:] = 0
-    M_normalized = M_normalized[[0,1,2,3,5,6,7],:]  # remove C4 channel
+#    M_normalized = M_normalized[[0,1,2,3,5,6,7],:]  # remove C4 channel
     
     return M_normalized
 #%%	
@@ -254,7 +254,6 @@ def alpha(M, Fs):
     
     return Malpha, Mbeta, Mdelta, Mgamma, Mtheta
 #%%
-
 br15a, br15b,br15d,br15g,br15t = alpha(rp15,Fs)
 br15f, br15a = Mpsd(br15a,Fs)
 br15f, br15b = Mpsd(br15b,Fs)
@@ -482,6 +481,7 @@ plt.xlabel("Valence")
 plt.ylabel("Arousal")
 plt.show()
 
+#%%
 from mpl_toolkits.mplot3d import Axes3D
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -510,7 +510,7 @@ for k in range(0,8):
     ax.set_zlabel('Power')
 
     plt.show()
-	
+    
 #%%
 
 win = signal.get_window('hanning',int(Fs))
@@ -527,7 +527,7 @@ for k in range(0,x):
 plt.show()
 
 spec_feat = np.sum(np.sum(S,axis=2),axis = 0)
-
+#power change over time?
 plt.figure()
 fr = np.arange(0,65)
 plt.plot(fr,spec_feat)
