@@ -52,24 +52,25 @@ from GUI import App
 """ ================================= begin setups ================================="""
 window = 10
 
-features = ['_gamma_sum.npy','_theta_sum.npy','_HFD.npy']
-feature = 0
+#features = ['_gamma_sum.npy','_theta_sum.npy','_HFD.npy']
+#feature = 0
 
-if feature == 0:
-    window = 10 # always angry
-    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W10_gamma_sum.npy_KNN7_clf_82.6086956522.pkl')
-elif feature == 1:
-    window = 10
-    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W10_theta_sum.npy_KNN7_clf_82.6086956522.pkl')
-elif feature ==2:
-    window = 15 # happy
-    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W15_HFD.npy_KNN3_clf_78.2608695652.pkl')
-elif feature ==3:
-    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W15_psd.npy_KNN5_clf_55.625.pkl')
-    window = 15
-else:
-    print "No valid classifier selected"
-    
+#if feature == 0:
+#   window = 10 # always angry
+#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W10_gamma_sum.npy_KNN7_clf_82.6086956522.pkl')
+#elif feature == 1:
+#    window = 10
+#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W10_theta_sum.npy_KNN7_clf_82.6086956522.pkl')
+#elif feature ==2:
+#    window = 15 # happy
+#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W15_HFD.npy_KNN3_clf_78.2608695652.pkl')
+#elif feature ==3:
+#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W15_psd.npy_KNN5_clf_55.625.pkl')
+#    window = 15
+#else:
+#    print "No valid classifier selected"
+ 
+joblib.load('./Data/Classifier/Stress_Calm/HvAvN_W10_theta_sum.npy_KNN5_clf_827.5.pkl')
 
 print "classifier loaded"
 print "Imports Complete"
@@ -121,7 +122,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
         """
         print "Filling Buffer please wait, Buffer size = %d s"%window
         fullbuff, x, y = lsl.Get_lsl(inlet, buff, Sz)  # Get 9x128 Matrix from LSL
-        #numpy.nan_to_num(x)
+        fullbuff = numpy.nan_to_num(fullbuff)
         for i in range(0,x):
             fullbuff[i,:] = (fullbuff[i,:]-base[i])*1e-8
 
@@ -132,18 +133,9 @@ if __name__=="__main__": # Main loop -------------------------------------------
         alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
         
         """ Select Feature to calculate =================================================="""
-        if feature == 0:
-            feat = np.sum(gamma, axis=0)
-        elif feature == 1:
-            feat = np.sum(theta, axis=0)
-        elif feature ==2:
-            feat = Feature_calc.hfd_feat(Normalized)
-        elif feature ==3:
-            feat = psdx
-        else:
-            print "No valid classifier selected"
-       
-        featp = np.sum(psdx, axis=0)
+
+        feat = np.sum(theta, axis=0)
+
         
         """ ================================== Predict =============================="""
         
