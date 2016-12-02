@@ -122,5 +122,5 @@ print accuracy
 
 """========================= Train Classifier Fully =========================="""
 clf.fit(train,yl)
-joblib.dump(clf, './Data/Classifier/Stress_Calm/HvAvN_W{0}{1}_KNN{3}_clf_{2}.pkl'.format(WS,feature[p],accuracy, knn) ) 
-a = "./Data/Classifier/Stress_Calm/HvAvN_W{0}{1}_KNN{3}_clf_{2}.pkl".format(WS,feature[p],accuracy,knn)
+joblib.dump(clf, './Data/Classifier/Stress_Calm/SvN_W{0}{1}_KNN{3}_clf_{2}.pkl'.format(WS,feature[p],accuracy, knn) ) 
+a = "./Data/Classifier/Stress_Calm/SvN_W{0}{1}_KNN{3}_clf_{2}.pkl".format(WS,feature[p],accuracy,knn)
