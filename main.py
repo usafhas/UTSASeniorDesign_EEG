@@ -70,7 +70,7 @@ window = 10
 #else:
 #    print "No valid classifier selected"
  
-joblib.load('./Data/Classifier/Stress_Calm/HvAvN_W10_theta_sum.npy_KNN5_clf_827.5.pkl')
+clf = joblib.load('./Data/Classifier/Stress_Calm/HvAvN_W10_theta_sum.npy_KNN5_clf_827.5.pkl')
 
 print "classifier loaded"
 print "Imports Complete"
@@ -122,7 +122,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
         """
         print "Filling Buffer please wait, Buffer size = %d s"%window
         fullbuff, x, y = lsl.Get_lsl(inlet, buff, Sz)  # Get 9x128 Matrix from LSL
-        fullbuff = numpy.nan_to_num(fullbuff)
+        fullbuff = np.nan_to_num(fullbuff)
         for i in range(0,x):
             fullbuff[i,:] = (fullbuff[i,:]-base[i])*1e-8
 
