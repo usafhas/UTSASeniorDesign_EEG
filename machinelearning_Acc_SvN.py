@@ -29,26 +29,27 @@ ff=[]
 
 for bbb in range(0,np.size(windows)):
 
-	WS = windows[bbb] # window size variable
+    WS = windows[bbb] # window size variable
 	
-	s1_happy = np.load('./Data/Training/happyW{0}.npy'.format(WS))
-	s1_angry = np.load('./Data/Training/angryW{0}.npy'.format(WS))
-	s1_norm = np.load('./Data/Training/normW{0}.npy'.format(WS))
+    s1_happy = np.load('./Data/Training/happyW{0}.npy'.format(WS))
+    s1_angry = np.load('./Data/Training/angryW{0}.npy'.format(WS))
+    s1_norm = np.load('./Data/Training/normW{0}.npy'.format(WS))
+    s1_calm = np.load('./Data/Training/calmW{0}.npy'.format(WS))
 	
 	
-	x = np.size(s1_happy)
-	y = np.size(s1_norm)
-	z = np.size(s1_angry)
+    x = np.size(s1_happy)
+    y = np.size(s1_calm)
+    z = np.size(s1_angry)
 
 
-	acc.append("\r\n\r\n\r\n=====================Stress vs Calm %s====================================== \r\n" %WS)
-	print "\r\n===================Stressed vs calm With Normal Window %s============================ \r\n"%WS
-	hvan = "SvN"
-	feature = ['_gamma_sum.npy','_theta_sum.npy','_psd_sum.npy','_psd.npy','_PP.npy','_alpha_sum.npy','_psd_flat.npy','_HFD.npy','_psd_mean.npy','_delta_sum.npy','_abspwr.npy','_abspwr_sum.npy','_cog.npy','_spec.npy']#,'_theta_gamma.npy' #'_PSD2.npy','_abspwr.npy','_abspwr_sum.npy','_alpha_0.npy','_alpha_1.npy','_alpha_2.npy','_alpha_3.npy','_alpha_4.npy','_alpha_5.npy','_alpha_6.npy','_alpha_7.npy','_beta_0.npy','_beta_1.npy','_beta_2.npy','_beta_3.npy','_beta_4.npy','_beta_5.npy','_beta_6.npy','_beta_7.npy','_delta_0.npy','_delta_1.npy','_delta_2.npy','_delta_3.npy','_delta_4.npy','_delta_5.npy','_delta_6.npy','_delta_7.npy','_gamma_0.npy','_gamma_1.npy','_gamma_2.npy','_gamma_3.npy','_gamma_4.npy','_gamma_5.npy','_gamma_6.npy','_gamma_7.npy','_theta_0.npy','_theta_1.npy','_theta_2.npy','_theta_3.npy','_theta_4.npy','_theta_5.npy','_theta_6.npy','_theta_7.npy','_psd_0.npy','_psd_1.npy','_psd_2.npy','_psd_3.npy','_psd_4.npy','_psd_5.npy','_psd_6.npy','_psd_7.npy'
+    acc.append("\r\n\r\n\r\n=====================Stress vs Calm %s====================================== \r\n" %WS)
+    print "\r\n===================Stressed vs calm With Normal Window %s============================ \r\n"%WS
+    hvan = "SvC"
+    feature = ['_gamma_sum.npy','_theta_sum.npy','_psd_sum.npy','_psd.npy','_PP.npy','_alpha_sum.npy','_psd_flat.npy','_HFD.npy','_psd_mean.npy','_delta_sum.npy','_abspwr.npy','_abspwr_sum.npy','_cog.npy','_spec.npy']#,'_theta_gamma.npy' #'_PSD2.npy','_abspwr.npy','_abspwr_sum.npy','_alpha_0.npy','_alpha_1.npy','_alpha_2.npy','_alpha_3.npy','_alpha_4.npy','_alpha_5.npy','_alpha_6.npy','_alpha_7.npy','_beta_0.npy','_beta_1.npy','_beta_2.npy','_beta_3.npy','_beta_4.npy','_beta_5.npy','_beta_6.npy','_beta_7.npy','_delta_0.npy','_delta_1.npy','_delta_2.npy','_delta_3.npy','_delta_4.npy','_delta_5.npy','_delta_6.npy','_delta_7.npy','_gamma_0.npy','_gamma_1.npy','_gamma_2.npy','_gamma_3.npy','_gamma_4.npy','_gamma_5.npy','_gamma_6.npy','_gamma_7.npy','_theta_0.npy','_theta_1.npy','_theta_2.npy','_theta_3.npy','_theta_4.npy','_theta_5.npy','_theta_6.npy','_theta_7.npy','_psd_0.npy','_psd_1.npy','_psd_2.npy','_psd_3.npy','_psd_4.npy','_psd_5.npy','_psd_6.npy','_psd_7.npy'
 #        feature = ['_gamma_sum.npy','_theta_sum.npy','_psd_sum.npy','_psd.npy','_PP.npy','_PPD.npy','_alpha_sum.npy','_psd_flat.npy','_HFD.npy','_HFDspec.npy','_psd_mean.npy','_beta_sum.npy','_delta_sum.npy','_abspwr.npy','_abspwr_sum.npy','_theta_gamma.npy','_alpha_0.npy','_alpha_1.npy','_alpha_2.npy','_alpha_3.npy','_alpha_4.npy','_alpha_5.npy','_alpha_6.npy','_alpha_7.npy','_beta_0.npy','_beta_1.npy','_beta_2.npy','_beta_3.npy','_beta_4.npy','_beta_5.npy','_beta_6.npy','_beta_7.npy','_delta_0.npy','_delta_1.npy','_delta_2.npy','_delta_3.npy','_delta_4.npy','_delta_5.npy','_delta_6.npy','_delta_7.npy','_gamma_0.npy','_gamma_1.npy','_gamma_2.npy','_gamma_3.npy','_gamma_4.npy','_gamma_5.npy','_gamma_6.npy','_gamma_7.npy','_theta_0.npy','_theta_1.npy','_theta_2.npy','_theta_3.npy','_theta_4.npy','_theta_5.npy','_theta_6.npy','_theta_7.npy','_psd_0.npy','_psd_1.npy','_psd_2.npy','_psd_3.npy','_psd_4.npy','_psd_5.npy','_psd_6.npy','_psd_7.npy'] #'_PSD2.npy'
-	q=0
-	""" ------------0--------------1-----------------2-------------3-----------4-----------5--------------6-------------7-----------------8----------------9----------10-----------11------------12----------13-----------14"""
-	for p in range(0,6):
+    q=0
+    """ ------------0--------------1-----------------2-------------3-----------4-----------5--------------6-------------7-----------------8----------------9----------10-----------11------------12----------13-----------14"""
+    for p in range(0,6):
 		if p ==0:
 			clf = KNeighborsClassifier(n_neighbors=5) 
 			print "=====================using KNN = 5================================="
@@ -96,7 +97,7 @@ for bbb in range(0,np.size(windows)):
 				h["happy{0}".format(i)]=np.load(s1_happy[i]+feature[q])
 			# Get Sad
 			for j in range(0,y):
-				c["calm{0}".format(j)]=np.load(s1_norm[j]+feature[q])
+				c["calm{0}".format(j)]=np.load(s1_calm[j]+feature[q])
 				
 			for k in range(0,z):
 				a["angry{0}".format(k)] = np.load(s1_angry[k]+feature[q])
