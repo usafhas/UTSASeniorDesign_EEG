@@ -50,7 +50,7 @@ import numpy as np
 from GUI import App
 #%%
 """ ================================= begin setups ================================="""
-window = 10
+window = 15
 
 #features = ['_gamma_sum.npy','_theta_sum.npy','_HFD.npy']
 #feature = 0
@@ -70,7 +70,12 @@ window = 10
 #else:
 #    print "No valid classifier selected"
  
-clf = joblib.load('./Data/Classifier/Stress_Calm/HvAvN_W10_theta_sum.npy_KNN5_clf_827.5.pkl')
+clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_abspwr.npy_KNN5_clf_88.2352941176.pkl')
+
+#clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_HFD.npy_KNN5_clf_88.2352941176.pkl')
+
+#clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W30_HFD.npy_KNN5_clf_100.0.pkl')
+
 
 print "classifier loaded"
 print "Imports Complete"
@@ -124,7 +129,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
         fullbuff, x, y = lsl.Get_lsl(inlet, buff, Sz)  # Get 9x128 Matrix from LSL
         fullbuff = np.nan_to_num(fullbuff)
         for i in range(0,x):
-            fullbuff[i,:] = (fullbuff[i,:]-base[i])*1e-8
+            fullbuff[i,:] = (fullbuff[i,:]-base[i])
 
 #        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
         print "Buffer filled Preprocessing"
@@ -134,7 +139,9 @@ if __name__=="__main__": # Main loop -------------------------------------------
         
         """ Select Feature to calculate =================================================="""
 
-        feat = np.sum(theta, axis=0)
+#        feat = np.sum(theta, axis=0)
+        feat = Feature_calc.abs_psd_feature(Normalized,Fs)
+#        feat = Feature_calc.hfd_feat(Normalized)
 
         
         """ ================================== Predict =============================="""
