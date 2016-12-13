@@ -368,6 +368,15 @@ for sel in range(0,np.size(windows)):
     np.save('./Data/Training/Raw/815norm_W{0}'.format(WS),S08[27,ch,0+offset:0+offset+Sz])
     np.save('./Data/Training/Raw/807norm_W{0}'.format(WS),S08[6,ch,0+offset:0+offset+Sz])
     np.save('./Data/Training/Raw/832norm_W{0}'.format(WS),S08[25,ch,0+offset:0+offset+Sz])
+	
+    """----Some calm data for participant 09 ----"""
+    np.save('./Data/Training/Raw/811calm_W{0}'.format(WS),S08[19,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/813calm_W{0}'.format(WS),S08[16,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/826calm_W{0}'.format(WS),S08[17,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/830calm_W{0}'.format(WS),S08[36,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/833calm_W{0}'.format(WS),S08[38,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/838calm_W{0}'.format(WS),S08[13,ch,0+offset:0+offset+Sz])
+    	
     x = cPickle.load(open('./Data/s09.dat', 'rb'))
     S09 = x.get('data')
     np.save('./Data/Training/Raw/903norm_W{0}'.format(WS),S09[6,ch,0+offset:0+offset+Sz])
@@ -377,6 +386,14 @@ for sel in range(0,np.size(windows)):
     np.save('./Data/Training/Raw/921norm_W{0}'.format(WS),S09[26,ch,0+offset:0+offset+Sz])
     np.save('./Data/Training/Raw/924norm_W{0}'.format(WS),S09[4,ch,0+offset:0+offset+Sz])
     np.save('./Data/Training/Raw/929norm_W{0}'.format(WS),S09[22,ch,0+offset:0+offset+Sz])
+    	
+    	
+    """----Some calm data for participant 09 ----"""
+    np.save('./Data/Training/Raw/901calm_W{0}'.format(WS),S09[0,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/902calm_W{0}'.format(WS),S09[8,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/917calm_W{0}'.format(WS),S09[24,ch,0+offset:0+offset+Sz])
+    	
+	
     
     
     """===================Samples Added by Matt==========================="""
@@ -403,6 +420,16 @@ for sel in range(0,np.size(windows)):
     
     np.save('./Data/Training/Raw/1018happy_W{0}'.format(WS),S10[8 ,ch,0+offset:0+offset+Sz])
     np.save('./Data/Training/Raw/1027happy_W{0}'.format(WS),S10[3 ,ch,0+offset:0+offset+Sz])
+	
+    np.save('./Data/Training/Raw/1002calm_W{0}'.format(WS),S10[23 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1003calm_W{0}'.format(WS),S10[8 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1006calm_W{0}'.format(WS),S10[13 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1008calm_W{0}'.format(WS),S10[11 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1010calm_W{0}'.format(WS),S10[12 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1017calm_W{0}'.format(WS),S10[17 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1025calm_W{0}'.format(WS),S10[14 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1026calm_W{0}'.format(WS),S10[19 ,ch,0+offset:0+offset+Sz])
+    np.save('./Data/Training/Raw/1030calm_W{0}'.format(WS),S10[3 ,ch,0+offset:0+offset+Sz])
     
     
     
@@ -464,3 +491,12 @@ for sel in range(0,np.size(windows)):
     			  './Data/Training/Raw/924norm_W{0}'.format(WS),'./Data/Training/Raw/929norm_W{0}'.format(WS)]
     
     np.save('./Data/Training/normW{0}'.format(WS), Data_S1_norm)
+	
+    Data_S1_calm=['./Data/Training/Raw/1002calm_W{0}'.format(WS),'./Data/Training/Raw/1003calm_W{0}'.format(WS),'./Data/Training/Raw/1006calm_W{0}'.format(WS),
+					'./Data/Training/Raw/1008calm_W{0}'.format(WS),'./Data/Training/Raw/1010calm_W{0}'.format(WS),'./Data/Training/Raw/1017calm_W{0}'.format(WS),
+					'./Data/Training/Raw/1025calm_W{0}'.format(WS),'./Data/Training/Raw/1026calm_W{0}'.format(WS),'./Data/Training/Raw/1030calm_W{0}'.format(WS),
+					'./Data/Training/Raw/901calm_W{0}'.format(WS),'./Data/Training/Raw/902calm_W{0}'.format(WS),'./Data/Training/Raw/917calm_W{0}'.format(WS),
+					'./Data/Training/Raw/811calm_W{0}'.format(WS),'./Data/Training/Raw/813calm_W{0}'.format(WS),'./Data/Training/Raw/826calm_W{0}'.format(WS),
+					'./Data/Training/Raw/830calm_W{0}'.format(WS),'./Data/Training/Raw/833calm_W{0}'.format(WS),'./Data/Training/Raw/838calm_W{0}'.format(WS)]
+	
+    np.save('./Data/Training/calmW{0}'.format(WS), Data_S1_calm)

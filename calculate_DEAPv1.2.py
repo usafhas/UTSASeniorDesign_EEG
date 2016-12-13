@@ -13,10 +13,11 @@ windows = [10,15,30]
 for sel in range(0,np.size(windows)):
     WS = windows[sel]# window size variable
     
-    s1_happy = np.load('./Data/Training/happyW{0}.npy'.format(WS))
+    s1_happy = np.load('./Data/Training/happyW{0}.npy'.format(WS))  #This is stressed Data
     s1_angry = np.load('./Data/Training/angryW{0}.npy'.format(WS))
-    s1_sad = np.load('./Data/Training/normW{0}.npy'.format(WS))
+#    s1_sad = np.load('./Data/Training/normW{0}.npy'.format(WS))
     #s1_sad = np.load('./Data/Training/sadW{0}.npy'.format(WS))
+    s1_sad = np.load('./Data/Training/calmW{0}.npy'.format(WS)) #This is Calm Data
     
     
     h = {}
