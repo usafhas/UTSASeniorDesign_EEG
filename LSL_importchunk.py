@@ -42,6 +42,7 @@ def fill_chunk(inlet, buff):
     if timestamp:
 #        print(sample)
         sample1 = np.asarray(sample)
+        sample1 = np.nan_to_num(sample1)
         #chunktest = np.append(chunktest, np.asarray(sample), axis=0)
         #chunktest = np.concatenate((chunktest, sample1), axis=1)
         buff = np.column_stack((buff, sample1))
