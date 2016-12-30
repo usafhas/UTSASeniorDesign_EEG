@@ -65,37 +65,57 @@ for i in range(0,8):
 n = 0
 s = 0
 c = 0
+step = 5 # size of moving window
+slide = (60-Window)/step # each video is 60 seconds
 
-h={}
+sliden = (30-Window)/step # Because normal lenght is only 30 seconds
+
+h={} # Declare a dictionary to store variables
 
 x,y = np.shape(hMatrix)
 
 for j in range(0,y):
     if hMatrix[8,j]==norm:
-        h["norm{0}".format(n)]=hMatrix[0:8,j:j+Sz]
-        n+=1
+        if sliden == 0:
+            h["norm{0}".format(n)]=hMatrix[0:8,j:j+Sz]
+            n+=1
+        else:
+            for q in range(0,sliden):
+                h["norm{0}".format(n)]=hMatrix[0:8,j+(q*step):j+Sz+(q*step)]
+                n+=1
     elif hMatrix[8,j]==stress:
-        h["stress{0}".format(s)]=hMatrix[0:8,j:j+Sz]
-        s+=1
+        for r in range(0,slide):
+            h["stress{0}".format(s)]=hMatrix[0:8,j+(r*step):j+Sz+(r*step)]
+            s+=1
     elif hMatrix[8,j]==calm:
-        h["calm{0}".format(c)]=hMatrix[0:8,j:j+Sz]
-        c+=1
+        for r in range(0,slide):
+            h["calm{0}".format(c)]=hMatrix[0:8,j+(r*step):j+Sz+(r*step)]
+            c+=1
     else:
         pass
     
 for j in range(0,y):
     if mMatrix[8,j]==norm:
-        h["norm{0}".format(n)]=mMatrix[0:8,j:j+Sz]
-        n+=1
+        if sliden == 0:
+            h["norm{0}".format(n)]=hMatrix[0:8,j:j+Sz]
+            n+=1
+        else:
+            for q in range(0,sliden):
+                h["norm{0}".format(n)]=mMatrix[0:8,j+(q*step):j+Sz+(q*step)]
+                n+=1
     elif mMatrix[8,j]==stress:
-        h["stress{0}".format(s)]=mMatrix[0:8,j:j+Sz]
-        s+=1
+        for r in range(0,slide):
+            h["stress{0}".format(s)]=mMatrix[0:8,j+(r*step):j+Sz+(r*step)]
+            s+=1
     elif mMatrix[8,j]==calm:
-        h["calm{0}".format(c)]=mMatrix[0:8,j:j+Sz]
-        c+=1
+        for r in range(0,slide):
+            h["calm{0}".format(c)]=mMatrix[0:8,j+(r*step):j+Sz+(r*step)]
+            c+=1
     else:
         pass
 
+    
+    """ Save the Data into Numpy Arrays """
 calm_list = []
 for cc in range(0,c):        
     np.save('./Data/Experiments/calm{1}_W{0}'.format(Window,cc), h["calm{0}".format(cc)])
