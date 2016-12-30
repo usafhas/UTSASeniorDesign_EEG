@@ -101,6 +101,8 @@ for bbb in range(0,np.size(windows)):
                 
             for k in range(0,z):
                 a["angry{0}".format(k)] = np.load(s1_stress[k]+feature[q])
+                
+            sizefx= np.shape(np.load(s1_norm[0]+feature[q]))
             
             """-----------------Stack the Data ---------------------------------------------"""
             
@@ -157,7 +159,10 @@ for bbb in range(0,np.size(windows)):
                 acstr = "\r\n%s \t\t\t %s \t\t %d \r\n" %(cs, feature[q], accuracy)
             print acstr
             acc.append(acstr)
-            csva.append(['\t',cs, '\t',feature[q],'\t', accuracy,'\t',hvan,'\t',WS,'\t'])
+            if np.size(sizefx) ==2:
+                csva.append(['\t',cs, '\t',feature[q],'\t', accuracy,'\t',hvan,'\t',WS,'\t', "x=",sizefx[0]," y=",sizefx[1], '\t'])
+            else:
+                csva.append(['\t',cs, '\t',feature[q],'\t', accuracy,'\t',hvan,'\t',WS,'\t', "x=",1, "y=",sizefx[0], '\t'])
             
 
 """========================= Train Classifier Fully =========================="""
