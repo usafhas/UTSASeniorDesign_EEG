@@ -500,3 +500,5 @@ for sel in range(0,np.size(windows)):
 					'./Data/Training/Raw/830calm_W{0}'.format(WS),'./Data/Training/Raw/833calm_W{0}'.format(WS),'./Data/Training/Raw/838calm_W{0}'.format(WS)]
 	
     np.save('./Data/Training/calmW{0}'.format(WS), Data_S1_calm)
+
+#test commit1
