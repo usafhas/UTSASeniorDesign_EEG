@@ -15,6 +15,7 @@ import csv
 from sklearn import naive_bayes
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.model_selection import cross_val_score # kstratifiedcrossfold method for training data
 
 windows = [10, 15, 30]
 n = {}
@@ -130,7 +131,7 @@ for bbb in range(0,np.size(windows)):
             yl.reshape(-1,1)
             
             
-            X_train, X_test, Y_train, Y_test = train_test_split(train, yl, test_size=0.33, random_state=42)
+            """X_train, X_test, Y_train, Y_test = train_test_split(train, yl, test_size=0.33, random_state=42)
             
             clf.fit(X_train,Y_train)
             
@@ -144,7 +145,9 @@ for bbb in range(0,np.size(windows)):
                 if Y_test[m] == result[m]:
                     accuracy = accuracy +1.0
                     
-            accuracy = accuracy/np.size(result)*100
+            accuracy = accuracy/np.size(result)*100"""
+            scoress = cross_val_score(clf, train, yl)
+            accuracy = np.mean(scores)
             print accuracy
             if accuracy >= 80:
                 acstr = "\r\n%s \t\t\t %s \t\t \\b %d \\b0\r\n" %(cs, feature[q], accuracy)
