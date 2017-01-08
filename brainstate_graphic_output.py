@@ -4,12 +4,37 @@
 # Author: Garrett Hall
 # 1/7/2017
 
+# edit: 1/8/2016
+# added brain state labels to corresponding indicators
+# provided comments
+
 from graphics import *
 import random
 import time
 
+# builds the window we will be drawing in
+win = GraphWin("Brain State", 300, 300)
+
+# these 3 labels tell us which brain state the system is in
+label = Text(Point(150, 50), 'Angry')
+label.setTextColor('red')
+label.draw(win)
+
+label = Text(Point(150, 150), 'Neutral')
+label.setTextColor('blue')
+label.draw(win)
+
+label = Text(Point(150, 250), 'Calm')
+label.setTextColor('green')
+label.draw(win)
+
+# this while loop demonstrates how inputs will be received. it counts to 10 and outputs a random integer 1,2, or 3
+# we can let the variable 'z' be substituted for the output of 'codename_dutchess'
+# the code uses the if/elif format to accommodate each brain state independently.
+# this was done so residue images do not conflict with current brain states
+
+
 a = 0
-win = GraphWin("My Circle", 300, 300)
 while a < 10:
     a = a + 1
     z=random.randint(1,3);
@@ -60,11 +85,8 @@ while a < 10:
         c_green.draw(win)
         c_green.setFill('green')
         c_green.setOutline('green')
+    # the time.sleep command is used to pause the loop for 1 second
     time.sleep(1)
-
-
 
 #win.getMouse() # Pause to view result
 #win.close()    # Close window when done
-
-# main()
