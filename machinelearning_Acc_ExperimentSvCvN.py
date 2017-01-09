@@ -15,6 +15,8 @@ import csv
 from sklearn import naive_bayes
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.model_selection import cross_val_score # kstratifiedcrossfold method for training data
+
 
 windows = [10, 15, 30]
 n = {}
@@ -137,21 +139,8 @@ for bbb in range(0,np.size(windows)):
             yl.reshape(-1,1)
             
             
-            X_train, X_test, Y_train, Y_test = train_test_split(train, yl, test_size=0.33, random_state=42)
-            
-            clf.fit(X_train,Y_train)
-            
-            
-            accuracy = 0.0
-            
-            result = clf.predict(X_test)
-            
-            for m in range(0,np.size(result)):
-            #        print 'Sample Lable', Y_test[m] ,'sample prediction', s[m]
-                if Y_test[m] == result[m]:
-                    accuracy = accuracy +1.0
-                    
-            accuracy = accuracy/np.size(result)*100
+            scores = cross_val_score(clf, train, yl, cv=3)
+            accuracy = np.mean(scores)
             print accuracy
             if accuracy >= 80:
                 acstr = "\r\n%s \t\t\t %s \t\t \\b %d \\b0\r\n" %(cs, feature[q], accuracy)
@@ -175,7 +164,7 @@ with open('accuracy.rtf', 'w') as f:
     f.writelines(acc)
     f.write(r'}\n\x00')
 
-with open('Accuracy_testing.csv', 'wb') as myfile:
+with open('Accuracy_testing_experiment_SvNvC.csv', 'wb') as myfile:
     wr = csv.writer(myfile, delimiter = '\t', quoting=csv.QUOTE_NONE)
     x,y = np.shape(csva)
     for c in range (0,x):
