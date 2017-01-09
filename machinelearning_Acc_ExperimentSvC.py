@@ -16,6 +16,7 @@ from sklearn import naive_bayes
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import cross_val_score # kstratifiedcrossfold method for training data
+#from sklearn.model_selection import cross_val_score
 
 windows = [10, 15, 30]
 n = {}
@@ -45,7 +46,7 @@ for bbb in range(0,np.size(windows)):
 
     acc.append("\r\n\r\n\r\n=====================Stress vs Calm %s====================================== \r\n" %WS)
     print "\r\n===================Stressed vs calm %s============================ \r\n"%WS
-    hvan = "SvC"
+    hvan = "Stress v Calm"
     feature = ['_gamma_sum.npy','_theta_sum.npy','_psd_sum.npy','_psd.npy','_PP.npy','_alpha_sum.npy','_psd_flat.npy','_HFD.npy','_psd_mean.npy','_delta_sum.npy','_abspwr.npy','_abspwr_sum.npy','_cog.npy','_spec.npy']#,'_theta_gamma.npy' #'_PSD2.npy','_abspwr.npy','_abspwr_sum.npy','_alpha_0.npy','_alpha_1.npy','_alpha_2.npy','_alpha_3.npy','_alpha_4.npy','_alpha_5.npy','_alpha_6.npy','_alpha_7.npy','_beta_0.npy','_beta_1.npy','_beta_2.npy','_beta_3.npy','_beta_4.npy','_beta_5.npy','_beta_6.npy','_beta_7.npy','_delta_0.npy','_delta_1.npy','_delta_2.npy','_delta_3.npy','_delta_4.npy','_delta_5.npy','_delta_6.npy','_delta_7.npy','_gamma_0.npy','_gamma_1.npy','_gamma_2.npy','_gamma_3.npy','_gamma_4.npy','_gamma_5.npy','_gamma_6.npy','_gamma_7.npy','_theta_0.npy','_theta_1.npy','_theta_2.npy','_theta_3.npy','_theta_4.npy','_theta_5.npy','_theta_6.npy','_theta_7.npy','_psd_0.npy','_psd_1.npy','_psd_2.npy','_psd_3.npy','_psd_4.npy','_psd_5.npy','_psd_6.npy','_psd_7.npy'
 #        feature = ['_gamma_sum.npy','_theta_sum.npy','_psd_sum.npy','_psd.npy','_PP.npy','_PPD.npy','_alpha_sum.npy','_psd_flat.npy','_HFD.npy','_HFDspec.npy','_psd_mean.npy','_beta_sum.npy','_delta_sum.npy','_abspwr.npy','_abspwr_sum.npy','_theta_gamma.npy','_alpha_0.npy','_alpha_1.npy','_alpha_2.npy','_alpha_3.npy','_alpha_4.npy','_alpha_5.npy','_alpha_6.npy','_alpha_7.npy','_beta_0.npy','_beta_1.npy','_beta_2.npy','_beta_3.npy','_beta_4.npy','_beta_5.npy','_beta_6.npy','_beta_7.npy','_delta_0.npy','_delta_1.npy','_delta_2.npy','_delta_3.npy','_delta_4.npy','_delta_5.npy','_delta_6.npy','_delta_7.npy','_gamma_0.npy','_gamma_1.npy','_gamma_2.npy','_gamma_3.npy','_gamma_4.npy','_gamma_5.npy','_gamma_6.npy','_gamma_7.npy','_theta_0.npy','_theta_1.npy','_theta_2.npy','_theta_3.npy','_theta_4.npy','_theta_5.npy','_theta_6.npy','_theta_7.npy','_psd_0.npy','_psd_1.npy','_psd_2.npy','_psd_3.npy','_psd_4.npy','_psd_5.npy','_psd_6.npy','_psd_7.npy'] #'_PSD2.npy'
     q=0
@@ -146,7 +147,8 @@ for bbb in range(0,np.size(windows)):
                     accuracy = accuracy +1.0
                     
             accuracy = accuracy/np.size(result)*100"""
-            scoress = cross_val_score(clf, train, yl)
+#            scores = cross_val_score(clf, train, yl)
+            scores = cross_val_score(clf, train, yl, cv=3)
             accuracy = np.mean(scores)
             print accuracy
             if accuracy >= 80:
@@ -171,7 +173,7 @@ with open('accuracy.rtf', 'w') as f:
     f.writelines(acc)
     f.write(r'}\n\x00')
 
-with open('Accuracy_testing_experiment.csv', 'wb') as myfile:
+with open('Accuracy_testing_experiment_SvC.csv', 'wb') as myfile:
     wr = csv.writer(myfile, delimiter = '\t', quoting=csv.QUOTE_NONE)
     x,y = np.shape(csva)
     for c in range (0,x):
