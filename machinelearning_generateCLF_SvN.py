@@ -20,6 +20,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn import naive_bayes
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.model_selection import cross_val_score # for kstratified cross validation algorithm
 #
 #iris = load_iris()
 #
@@ -103,9 +104,13 @@ yl = np.append(yh,ya)
 yl.reshape(-1,1)
 
 
-X_train, X_test, Y_train, Y_test = train_test_split(train, yl, test_size=0.33, random_state=42)
+#X_train, X_test, Y_train, Y_test = train_test_split(train, yl, test_size=0.33, random_state=42)
 
-clf.fit(X_train,Y_train)
+scores = cross_val_score(clf, X_train, Y_train) # kstratified fold cross validation, automatically splits data set up into 3 parts by default
+print scores
+print np.mean(scores)
+
+#clf.fit(X_train,Y_train)
 
 
 accuracy = 0.0
