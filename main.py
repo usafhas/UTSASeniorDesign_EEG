@@ -51,24 +51,6 @@ from GUI import App
 #%%
 """ ================================= begin setups ================================="""
 window = 15
-
-#features = ['_gamma_sum.npy','_theta_sum.npy','_HFD.npy']
-#feature = 0
-
-#if feature == 0:
-#   window = 10 # always angry
-#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W10_gamma_sum.npy_KNN7_clf_82.6086956522.pkl')
-#elif feature == 1:
-#    window = 10
-#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W10_theta_sum.npy_KNN7_clf_82.6086956522.pkl')
-#elif feature ==2:
-#    window = 15 # happy
-#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W15_HFD.npy_KNN3_clf_78.2608695652.pkl')
-#elif feature ==3:
-#    clf = joblib.load('./Data/Training/Live/17Nov/HvAvN_W15_psd.npy_KNN5_clf_55.625.pkl')
-#    window = 15
-#else:
-#    print "No valid classifier selected"
  
 clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_abspwr.npy_KNN5_clf_88.2352941176.pkl')
 
@@ -117,8 +99,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     del buff  # Delete buffer to save memory
     buff = lsl.re(inlet)  # Reinitialize buff
     print("Baseline collected")
-    
-    
+
     
     while(True): # infinite Loop
         """ This is the main part of the code, and will run infinitely.  The buffer is filled and stored as Live_Matrix
@@ -140,7 +121,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
         """ Select Feature to calculate =================================================="""
 
 #        feat = np.sum(theta, axis=0)
-        feat = Feature_calc.abs_psd_feature(Normalized,Fs)
+        feat = Feature_calc.abs_psd_feature(Normalized,Fs) # this feature seemed to work with calm and stressed
 #        feat = Feature_calc.hfd_feat(Normalized)
 
         
@@ -158,12 +139,12 @@ if __name__=="__main__": # Main loop -------------------------------------------
         if result == 1:
 #            Feature_calc.play_wav('Happy_1.wav',1024)
             print '\r\n\r\n'
-            print "Subject Happy"
+            print "Subject Stressed"
             print '\r\n'
         elif result == 2:
 #            Feature_calc.play_wav('Angry_1.wav',1024)
             print '\r\n\r\n'
-            print "Subject Angry"
+            print "Subject Calm"
             print '\r\n'
         else:
             print '\r\n\r\n'
