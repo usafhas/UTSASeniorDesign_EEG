@@ -27,10 +27,10 @@ C:\Users\Heath\Anaconda2\python.exe -m pip install
 C:\Users\Heath\Anaconda2\envs\SeniorDesign\python.exe -m pip install
 
 pylsl
-pyaudio
+
 scikit-learn
 scikit-fuzzy
-pyrem
+
 C:\Users\Heath\Google Drive\UTSA\05_Fall 16\Senior Design\EEG_Project_Code\CODENAME_Duthess\PeakUtils-1.0.3.tar\dist\PeakUtils-1.0.3\PeakUtils-1.0.3\
 python setup.py install
 
@@ -48,6 +48,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.externals import joblib
 import numpy as np
 from GUI import App
+
+from graphics import *
+import pickle
+import sys
+
 #%%
 """ ================================= begin setups ================================="""
 window = 15
@@ -87,9 +92,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     
     i=0
     
-    # initialize GUI
-    app = App()
-    app.setup()
+
     
     # get data for baseline removeal
     print("Collecting window for baseline")
@@ -124,7 +127,6 @@ if __name__=="__main__": # Main loop -------------------------------------------
         feat = Feature_calc.abs_psd_feature(Normalized,Fs) # this feature seemed to work with calm and stressed
 #        feat = Feature_calc.hfd_feat(Normalized)
 
-        
         """ ================================== Predict =============================="""
         
         feat.reshape(-1,1)
@@ -133,23 +135,8 @@ if __name__=="__main__": # Main loop -------------------------------------------
         print 'I can see into the Future, I predict this to be ', result
         print "================================", i, "=============================="
         i+=1
-        
-        app.update_label(result % 3, i)
-        
-        if result == 1:
-#            Feature_calc.play_wav('Happy_1.wav',1024)
-            print '\r\n\r\n'
-            print "Subject Stressed"
-            print '\r\n'
-        elif result == 2:
-#            Feature_calc.play_wav('Angry_1.wav',1024)
-            print '\r\n\r\n'
-            print "Subject Calm"
-            print '\r\n'
-        else:
-            print '\r\n\r\n'
-            print "Brain Dead"
-            print '\r\n'
+#        np.save('./result',result)
+
 
 ## -------------------------------------------------------------------------------
         del buff  # Delete buffer to save memory
