@@ -221,6 +221,25 @@ for sel in range(0,np.size(windows)):
     for k in range(0,z):
         apwr["angry_sum{0}".format(k)] = np.sum(apwr["angry{0}".format(k)],axis=0)
         np.save(ex_stress[k]+'_abspwr_sum', apwr["angry_sum{0}".format(k)])
+        
+    """ ========================== Alpha Absolute Power ============================ """
+    
+    """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
+        can be used as a feature for the classifier. """
+    
+    hpwra = {}
+    for i in range(0,x):
+         hpwra["happy{0}".format(i)]=Feature_calc.abs_psd_alpha(h["norm{0}".format(i)], Fs)
+         np.save(ex_norm[i]+'_abspwr_alpha8', hpwra["happy{0}".format(i)])
+    spwra ={}
+    for j in range(0,y):
+         spwra["sad{0}".format(j)]=Feature_calc.abs_psd_alpha(s["calm{0}".format(j)], Fs)
+         np.save(ex_calm[j]+'_abspwr_alpha8', spwra["sad{0}".format(j)])
+         
+    apwra = {}     
+    for k in range(0,z):
+        apwra["angry{0}".format(k)] = Feature_calc.abs_psd_alpha(a["stress{0}".format(k)],Fs)
+        np.save(ex_stress[k]+'_abspwr_alpha8', apwra["angry{0}".format(k)])
          
     
     """=========================== PSD + Power ================================"""

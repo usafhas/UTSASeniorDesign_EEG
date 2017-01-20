@@ -52,6 +52,7 @@ from GUI import App
 from graphics import *
 import pickle
 import sys
+import os
 
 #%%
 """ ================================= begin setups ================================="""
@@ -71,6 +72,11 @@ print "Imports Complete"
 if __name__=="__main__": # Main loop ------------------------------------------------------------------------
     """ Initialize the LSL stream inlet in LSL_importchunk.py  """
     print "looking for LSL.........Start the LSL"
+    
+    #Run a random LSL stream for testing
+    os.system("./LSL_Send_Random.py")
+    
+    
     # initialize LSL grab
     inlet, buff = lsl.initialize_LSL()
     print "LSL initialized"

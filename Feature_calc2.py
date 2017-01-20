@@ -248,6 +248,23 @@ def abs_psd_feature(Live_matrix,Fs):
 
     return feature
     
+def abs_psd_alpha(Live_matrix,Fs):
+    """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
+    can be used as a feature for the classifier. """
+    
+    Malph, Mbeta, Mdelta, Mgamma, Mtheta = alpha(Live_matrix,Fs)
+    psdfa, alphaa = Mpsd(Malph, Fs)
+
+    
+    alphaabs, powera = absolute_PSD(alphaa)
+
+    x,y = np.shape(Live_matrix)
+    feature=np.zeros((1,8))
+    """Make a 9x5 array, each row is a channel PSD, each column is a frequency band """
+    feature = alphaabs.T
+
+    return feature
+    
 def Band_PSD(Live_matrix,Fs):
     """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
     can be used as a feature for the classifier. """
