@@ -45,6 +45,26 @@ def addrec():
 			con.close()
 """
 
+def push_to_DB(out, emot):
+	date = datetime.now()
+	#print date
+	try:
+		with sql.connect("SeniorDesign2/EEG_data.db") as con:
+			cur = con.cursor()
+
+			cur.execute("INSERT INTO dataset (Output,Emotion,Date) VALUES (?,?,?)",(out,emot,date))
+
+			con.commit()
+			msg = "Record successfully added"
+	except:
+		con.rollback()
+		msg = "error in insert operation"
+
+	finally:
+		print msg
+		con.close()
+		
+# 
 def push(out, emot):
 	date = datetime.now()
 	#print date

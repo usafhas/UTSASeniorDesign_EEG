@@ -47,7 +47,8 @@ from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.externals import joblib
 import numpy as np
-from GUI import App
+#from GUI import App
+from SeniorDesign2.EEGdata import push_to_DB # Database package method to communicate with main
 #%%
 """ ================================= begin setups ================================="""
 window = 15
@@ -88,8 +89,8 @@ if __name__=="__main__": # Main loop -------------------------------------------
     i=0
     
     # initialize GUI
-    app = App()
-    app.setup()
+    #app = App()
+    #app.setup()
     
     # get data for baseline removeal
     print("Collecting window for baseline")
@@ -134,7 +135,17 @@ if __name__=="__main__": # Main loop -------------------------------------------
         print "================================", i, "=============================="
         i+=1
         
-        app.update_label(result % 3, i)
+        #app.update_label(result % 3, i)
+        # Michael's Added Code
+        if(result == 1):
+            emot = "Stressed"
+        elif(result == 2):
+            emot = "Calm"
+        else:
+            emot = "Brain Dead"
+        
+        push_to_DB(result,emot)
+        # Finished Added Code
         
         if result == 1:
 #            Feature_calc.play_wav('Happy_1.wav',1024)
