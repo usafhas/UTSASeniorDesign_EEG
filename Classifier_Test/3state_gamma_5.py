@@ -45,22 +45,14 @@ from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.externals import joblib
 import numpy as np
-from pylsl import StreamInfo, StreamOutlet
 import pickle
 #import sys
 #import os
 
 #%%
 """ ================================= begin setups ================================="""
-window = 15
- 
-clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_abspwr.npy_KNN5_clf_88.2352941176.pkl')
-
-#clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_HFD.npy_KNN5_clf_88.2352941176.pkl')
-
-#clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W30_HFD.npy_KNN5_clf_100.0.pkl')
-
-
+window = 10
+clf = joblib.load('./classifiers/SvCvN_W10_gamma_sum.npy_5.pkl')
 print "classifier loaded"
 print "Imports Complete"
 #%%      
@@ -77,10 +69,6 @@ if __name__=="__main__": # Main loop -------------------------------------------
     inlet, buff = lsl.initialize_LSL()
     print "LSL initialized"
     plt.close("all") # Close all open plots
-    #setup LSL output stream
-    # Name = UTSA, Content=Output, Channels=1, Hz=1, type = int, UID = SD
-    info = StreamInfo('UTSA', 'Output', 1, 1, 'float32', 'SD')
-    outlet = StreamOutlet(info)
     
     #----------------Global Variables----------------------------------
     """ Initialize global variable utilized throughout the code
@@ -92,7 +80,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     Fs = 128.0 #sampling rate of the headset
     Sz = window*Fs # 1 second of sample
     x = 9 # number of channels + 1
-
+    threads = []
     t = np.arange(0, Sz)*1/Fs
     print "Globals Declared"
     
@@ -127,17 +115,19 @@ if __name__=="__main__": # Main loop -------------------------------------------
         
         """ Select Feature to calculate =================================================="""
 
-        feat = Feature_calc.abs_psd_feature(Normalized,Fs) # this feature seemed to work with calm and stressed
+        feat = np.sum(gamma,axis=0)
 
         """ ================================== Predict =============================="""
         
         feat.reshape(-1,1)
         result = clf.predict(feat)
-        outlet.push_sample(result)
         
         print 'I can see into the Future, I predict this to be ', result
         print "================================", i, "=============================="
         i+=1
+#        np.save('./result',result)
+
+
 ## -------------------------------------------------------------------------------
         del buff  # Delete buffer to save memory
         buff = lsl.re(inlet)  # Reinitialize buff

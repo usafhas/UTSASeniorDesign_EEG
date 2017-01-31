@@ -142,12 +142,12 @@ for bbb in range(0,np.size(windows)):
             
 
 """========================= Train Classifier Fully =========================="""
-with open('accuracy.txt', 'w') as f:
-    f.writelines(acc)
-with open('accuracy.rtf', 'w') as f:
-    f.write(r'{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fswiss\fcharset0 Arial;}}')
-    f.writelines(acc)
-    f.write(r'}\n\x00')
+#with open('accuracy.txt', 'w') as f:
+#    f.writelines(acc)
+#with open('accuracy.rtf', 'w') as f:
+#    f.write(r'{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fswiss\fcharset0 Arial;}}')
+#    f.writelines(acc)
+#    f.write(r'}\n\x00')
 
 with open('Accuracy_testing_experiment_SvNvC.csv', 'wb') as myfile:
     wr = csv.writer(myfile, delimiter = '\t', quoting=csv.QUOTE_NONE)
