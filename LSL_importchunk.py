@@ -13,7 +13,7 @@ into the classifier
 
 from pylsl import StreamInlet, resolve_stream
 import numpy as np
-import pandas as pd
+#import pandas as pd
 # Global Variable
 
 

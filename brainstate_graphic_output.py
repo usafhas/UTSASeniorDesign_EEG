@@ -7,10 +7,13 @@
 # edit: 1/8/2016
 # added brain state labels to corresponding indicators
 # provided comments
-
+from __future__ import print_function
 from graphics import *
 import random
 import time
+import numpy as np
+import pickle
+import sys
 
 # builds the window we will be drawing in
 win = GraphWin("Brain State", 300, 300)
@@ -37,7 +40,8 @@ label.draw(win)
 a = 0
 while a < 10:
     a = a + 1
-    z=random.randint(1,3);
+#    z=random.randint(1,3);
+    z = np.load('./result.npy')
     if z==1:
         c_red = Circle(Point(50, 50), 30)
         c_red.draw(win)
@@ -86,7 +90,7 @@ while a < 10:
         c_green.setFill('green')
         c_green.setOutline('green')
     # the time.sleep command is used to pause the loop for 1 second
-    time.sleep(1)
+    time.sleep(5)
 
 #win.getMouse() # Pause to view result
 #win.close()    # Close window when done

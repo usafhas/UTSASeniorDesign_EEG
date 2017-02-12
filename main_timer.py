@@ -40,20 +40,31 @@ from scipy import signal
 import LSL_importchunk  as lsl# import file with functions to grab data via LSL
 # import EDF_MNE # file to import eeg data in edf
 import Feature_calc2 as Feature_calc #calculate features from LSL
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.externals import joblib
 import numpy as np
-from pylsl import StreamInfo, StreamOutlet
+from GUI import App
+
+from graphics import *
 import pickle
-#import sys
-#import os
+import sys
+import os
+import time
+import threading
 
 #%%
 """ ================================= begin setups ================================="""
 window = 15
-clf = joblib.load('./Classifier_Test/classifiers/SvCvN_W15_theta_sum.npy_QDA.pkl')
+ 
+clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_abspwr.npy_KNN5_clf_88.2352941176.pkl')
+
+#clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W15_HFD.npy_KNN5_clf_88.2352941176.pkl')
+
+#clf = joblib.load('./Data/Classifier/Stress_Calm/SvC_W30_HFD.npy_KNN5_clf_100.0.pkl')
+
+times = []
 print "classifier loaded"
 print "Imports Complete"
 #%%      
@@ -63,17 +74,23 @@ if __name__=="__main__": # Main loop -------------------------------------------
     print "looking for LSL.........Start the LSL"
     
     #Run a random LSL stream for testing
-#    os.system("./LSL_Send_Random.py")
-    
+#    execfile("./LSL_Send_Random.py")
+#    
+#    try:
+#        #Create thread
+#        lsl_thread = threading.Thread( target = execfile, args = ('./LSL_Send_Random.py',) )
+#        #Start thread
+#        lsl_thread.start()
+#        #Code to run in the main thread
+#
+#    except:
+#        print('Error loading GUI')
+#    
     
     # initialize LSL grab
     inlet, buff = lsl.initialize_LSL()
     print "LSL initialized"
-    #plt.close("all") # Close all open plots
-    #setup LSL output stream
-    # Name = UTSA, Content=Output, Channels=1, Hz=1, type = int, UID = SD
-    info = StreamInfo('UTSA', 'Output', 1, 1, 'float32', 'SD')
-    outlet = StreamOutlet(info)
+    plt.close("all") # Close all open plots
     
     #----------------Global Variables----------------------------------
     """ Initialize global variable utilized throughout the code
@@ -85,12 +102,14 @@ if __name__=="__main__": # Main loop -------------------------------------------
     Fs = 128.0 #sampling rate of the headset
     Sz = window*Fs # 1 second of sample
     x = 9 # number of channels + 1
-
+    threads = []
     t = np.arange(0, Sz)*1/Fs
     print "Globals Declared"
     
     i=0
+    
 
+    
     # get data for baseline removeal
     print("Collecting window for baseline")
     BSz = 3*Fs # 3 second baseline
@@ -107,29 +126,68 @@ if __name__=="__main__": # Main loop -------------------------------------------
     finally the buffer is deleted, and then reinitialized to be sent back in to be filled 
         """
         print "Filling Buffer please wait, Buffer size = %d s"%window
+        start = time.time()
         fullbuff, x, y = lsl.Get_lsl(inlet, buff, Sz)  # Get 9x128 Matrix from LSL
-        fullbuff = np.nan_to_num(fullbuff)
+#        fullbuff = np.nan_to_num(fullbuff)
+        end = time.time()
+        buffTime = (end-start)
+        
+        times.append(buffTime)
+        
+        start2 = time.time()
         for i in range(0,x):
             fullbuff[i,:] = (fullbuff[i,:]-base[i])
-
+        end2 = time.time()
+        baseTime = (end2-start2)
+        
+        times.append(baseTime)
 #        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
         print "Buffer filled Preprocessing"
+        
+        start3 = time.time()
         live_M = Feature_calc.DEAP_process(fullbuff,Fs)
+        end3 = time.time()
+        preTime = (end3-start3)
+        times.append(preTime)
+        
+        start4 = time.time()
         Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
+        end4 = time.time()
+        normTime = (end4-start4)
+        times.append(normTime)
+        
+        start5 = time.time()
         alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
+        end5 = time.time()
+        psdbandTime = (end5-start5)
+        times.append(psdbandTime)
         
         """ Select Feature to calculate =================================================="""
 
-        feat = np.sum(theta,axis=0)
+#        feat = np.sum(theta, axis=0)
+        start6 = time.time()
+        feat = Feature_calc.abs_psd_feature(Normalized,Fs) # this feature seemed to work with calm and stressed
+#        feat = Feature_calc.hfd_feat(Normalized)
+        end6 = time.time()
+        featTime = (end6-start6)
+        times.append(featTime)
         """ ================================== Predict =============================="""
-        
+        start7 = time.time()
         feat.reshape(-1,1)
         result = clf.predict(feat)
-        outlet.push_sample(result)
+        end7 = time.time()
+        classTime = (end7-start7)
+        times.append(classTime)
+        
+        timelast = times
+        times = []
         
         print 'I can see into the Future, I predict this to be ', result
         print "================================", i, "=============================="
         i+=1
+#        np.save('./result',result)
+
+
 ## -------------------------------------------------------------------------------
         del buff  # Delete buffer to save memory
         buff = lsl.re(inlet)  # Reinitialize buff
