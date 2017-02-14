@@ -93,7 +93,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     t = np.arange(0, Sz)*1/Fs
     print "Globals Declared"
     
-    iii=0
+    i=0
 
     # get data for baseline removeal
     print("Collecting window for baseline")
@@ -105,20 +105,14 @@ if __name__=="__main__": # Main loop -------------------------------------------
     print("Baseline collected")
     
     Q = Queue(maxsize=20)
-#    for thr in range(0,20):
-#        inlet, buff = lsl.initialize_LSL()
-#        t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-#        t.daemon = True
-#        t.start()
-##        del buff
-#        sleep(1)
-    while(True):
+    for thr in range(0,20):
         inlet, buff = lsl.initialize_LSL()
         t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
         t.daemon = True
         t.start()
 #        del buff
         sleep(1)
+    while(True):
         while not Q.empty():
     #        pass
         
@@ -149,13 +143,13 @@ if __name__=="__main__": # Main loop -------------------------------------------
             outlet.push_sample(result)
             
             print 'I can see into the Future, I predict this to be ', result
-            print "================================", iii, "=============================="
-            iii+=1
+            print "================================", i, "=============================="
+            i+=1
     ## -------------------------------------------------------------------------------
     #        del buff  # Delete buffer to save memory
-#            inlet, buff = lsl.initialize_LSL()
-#            t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-#            t.daemon = True
-#            t.start()
-##            del buff
+            inlet, buff = lsl.initialize_LSL()
+            t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
+            t.daemon = True
+            t.start()
+#            del buff
         

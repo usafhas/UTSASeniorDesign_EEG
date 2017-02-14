@@ -47,10 +47,6 @@ from sklearn.externals import joblib
 import numpy as np
 from pylsl import StreamInfo, StreamOutlet
 import pickle
-import Thread_test
-from time import sleep
-from Queue import Queue
-from threading import Thread
 #import sys
 #import os
 
@@ -93,7 +89,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     t = np.arange(0, Sz)*1/Fs
     print "Globals Declared"
     
-    iii=0
+    i=0
 
     # get data for baseline removeal
     print("Collecting window for baseline")
@@ -103,59 +99,38 @@ if __name__=="__main__": # Main loop -------------------------------------------
     del buff  # Delete buffer to save memory
     buff = lsl.re(inlet)  # Reinitialize buff
     print("Baseline collected")
+
     
-    Q = Queue(maxsize=20)
-#    for thr in range(0,20):
-#        inlet, buff = lsl.initialize_LSL()
-#        t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-#        t.daemon = True
-#        t.start()
-##        del buff
-#        sleep(1)
-    while(True):
-        inlet, buff = lsl.initialize_LSL()
-        t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-        t.daemon = True
-        t.start()
-#        del buff
-        sleep(1)
-        while not Q.empty():
-    #        pass
+    while(True): # infinite Loop
+        """ This is the main part of the code, and will run infinitely.  The buffer is filled and stored as Live_Matrix
+    Live_matrix is then High passed, Normalized, and PSD feature calculated and returned
+    finally the buffer is deleted, and then reinitialized to be sent back in to be filled 
+        """
+        print "Filling Buffer please wait, Buffer size = %d s"%window
+        fullbuff, x, y = lsl.Get_lsl(inlet, buff, Sz)  # Get 9x128 Matrix from LSL
+        fullbuff = np.nan_to_num(fullbuff)
+        for i in range(0,x):
+            fullbuff[i,:] = (fullbuff[i,:]-base[i])
+
+#        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
+        print "Buffer filled Preprocessing"
+        live_M = Feature_calc.DEAP_process(fullbuff,Fs)
+        Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
+        alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
         
-    #    while Buffer_thread.hold(): # infinite Loop
-            """ This is the main part of the code, and will run infinitely.  The buffer is filled and stored as Live_Matrix
-        Live_matrix is then High passed, Normalized, and PSD feature calculated and returned
-        finally the buffer is deleted, and then reinitialized to be sent back in to be filled 
-            """
-            print "Filling Buffer please wait, Buffer size = %d s"%window
-            fullbuff = Q.get()  # Get 9x128 Matrix from LSL
-            fullbuff = np.nan_to_num(fullbuff)
-            for i in range(0,x):
-                fullbuff[i,:] = (fullbuff[i,:]-base[i])
-    
-    #        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
-            print "Buffer filled Preprocessing"
-            live_M = Feature_calc.DEAP_process(fullbuff,Fs)
-            Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
-            alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
-            
-            """ Select Feature to calculate =================================================="""
-    
-            feat = np.sum(theta,axis=0)
-            """ ================================== Predict =============================="""
-            
-            feat.reshape(-1,1)
-            result = clf.predict(feat)
-            outlet.push_sample(result)
-            
-            print 'I can see into the Future, I predict this to be ', result
-            print "================================", iii, "=============================="
-            iii+=1
-    ## -------------------------------------------------------------------------------
-    #        del buff  # Delete buffer to save memory
-#            inlet, buff = lsl.initialize_LSL()
-#            t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-#            t.daemon = True
-#            t.start()
-##            del buff
+        """ Select Feature to calculate =================================================="""
+
+        feat = np.sum(theta,axis=0)
+        """ ================================== Predict =============================="""
         
+        feat.reshape(-1,1)
+        result = clf.predict(feat)
+        outlet.push_sample(result)
+        
+        print 'I can see into the Future, I predict this to be ', result
+        print "================================", i, "=============================="
+        i+=1
+## -------------------------------------------------------------------------------
+        del buff  # Delete buffer to save memory
+        buff = lsl.re(inlet)  # Reinitialize buff
+    
