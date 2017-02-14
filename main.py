@@ -53,7 +53,7 @@ import pickle
 #%%
 """ ================================= begin setups ================================="""
 window = 15
-clf = joblib.load('./Classifier_Test/classifiers/SvCvN_W15_theta_sum.npy_QDA.pkl')
+clf = joblib.load('./SvCvN_W15_theta_sum.npy_QDA.pkl')
 print "classifier loaded"
 print "Imports Complete"
 #%%      
