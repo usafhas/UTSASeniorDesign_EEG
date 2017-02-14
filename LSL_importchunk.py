@@ -97,6 +97,13 @@ def Get_lsl(inlet, buff, Sz):
 
 #%%
 
+def Buffer_thread(inlet, buff,Sz,Q):
+    fullbuff, x, y = Get_lsl(inlet, buff, Sz)
+    if not Q.full():
+        Q.put(fullbuff)
+    
+    
+    
 #while True:
 #    # get a new sample (you can also omit the timestamp part if you're not
 #    # interested in it)
