@@ -44,9 +44,9 @@ from scipy import signal
 from sklearn import preprocessing
 from sklearn import naive_bayes
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.integrate as integrate
-import peakutils
+
 from scipy.stats import threshold
 import scipy
 from sklearn.decomposition import KernelPCA
@@ -155,7 +155,7 @@ def Mpsd(M,Fs):
     return psdf, psdx
     
     
-def spec(M,Fs):
+def spectrogram_hanning(M,Fs):
     win = signal.get_window('hanning',int(Fs))
     f, t, S = signal.spectrogram(M,Fs,window=win,nperseg=Fs,noverlap=Fs/2)
     x,y,z = np.shape(S)
@@ -166,7 +166,7 @@ def spec(M,Fs):
     return spec_feat
 
 """ --------------------------------------------Band Pass ---------------------------------------------"""
-def alpha(M, Fs):  
+def bandPass_hamming(M, Fs):  
     """This function computes the band pass filter of all 5 frequency components of brain waves """
     # bands delta(1-3), theta(4-7), alpha(8-13), beta(14-30), gamma(31-43)
     # Band frequency bins = nyq
@@ -205,7 +205,7 @@ def alpha(M, Fs):
     
     return Malpha, Mbeta, Mdelta, Mgamma, Mtheta
 
-def absolute_PSD(band):
+def absoluteBandPower_PSD(band):
     """ This function calculates the total power in a given band, integrating to find the area under the curve.
     band is the PSD array of the filterd alpha, beta, delta, gamma or theta signal. """
     #low freq - lower limit of integrtion
@@ -218,7 +218,7 @@ def absolute_PSD(band):
     
     return abs_psd, power
     
-def abs_psd_feature(Live_matrix,Fs):
+def total_bandpower_perchannel(Live_matrix,Fs):
     """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
     can be used as a feature for the classifier. """
     
@@ -229,11 +229,11 @@ def abs_psd_feature(Live_matrix,Fs):
     psdfg, gamma = Mpsd(Mgamma, Fs)
     psdft, theta = Mpsd(Mtheta, Fs)
     
-    alphaabs, powera = absolute_PSD(alphaa)
-    betaabs, powerb = absolute_PSD(beta)
-    deltaabs, powerd = absolute_PSD(delta)
-    gammaabs, powerg = absolute_PSD(gamma)
-    thetaabs, powert = absolute_PSD(theta)
+    alphaabs, powera = absolueBandPower_PSD(alphaa)
+    betaabs, powerb = absolueBandPower_PSD(beta)
+    deltaabs, powerd = absolueBandPower_PSD(delta)
+    gammaabs, powerg = absolueBandPower_PSD(gamma)
+    thetaabs, powert = absolueBandPower_PSD(theta)
     x,y = np.shape(Live_matrix)
     feature=np.zeros((1,8))
     """Make a 9x5 array, each row is a channel PSD, each column is a frequency band """
@@ -252,10 +252,10 @@ def abs_psd_feature(Live_matrix,Fs):
     return feature
     
 def abs_psd_alpha(Live_matrix,Fs):
-    """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
+    """ take the abs_psd of alpha band, and aggregate them into a vector that
     can be used as a feature for the classifier. """
     
-    Malph, Mbeta, Mdelta, Mgamma, Mtheta = alpha(Live_matrix,Fs)
+    Malph, Mbeta, Mdelta, Mgamma, Mtheta = bandPass_hamming(Live_matrix,Fs)
     psdfa, alphaa = Mpsd(Malph, Fs)
 
     
@@ -272,7 +272,7 @@ def Band_PSD(Live_matrix,Fs):
     """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
     can be used as a feature for the classifier. """
     
-    Malph, Mbeta, Mdelta, Mgamma, Mtheta = alpha(Live_matrix,Fs)
+    Malph, Mbeta, Mdelta, Mgamma, Mtheta = bandPass_hamming(Live_matrix,Fs)
     psdfa, alphaa = Mpsd(Malph, Fs)
     psdfb, beta = Mpsd(Mbeta, Fs)
     psdfd, delta = Mpsd(Mdelta, Fs)
@@ -370,11 +370,11 @@ def DLAT(M,Fs):
 #csd(x, y[, fs, window, nperseg, noverlap, ...])	Estimate the cross power spectral density, Pxy, using Welch’s method.
 #coherence(x, y[, fs, window, nperseg, ...])	Estimate the magnitude squared coherence estimate, Cxy, of discrete-time signals X and Y using Welch’s method.
 #%%  Function definitions copied from other libraries
-import pyaudio
-import wave
-import sys
-import os.path
-import time
+#import pyaudio
+#import wave
+#import sys
+#import os.path
+#import time
 
 CHUNK_SIZE = 1024
 
