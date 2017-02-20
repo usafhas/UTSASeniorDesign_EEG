@@ -104,8 +104,8 @@ if __name__=="__main__": # Main loop -------------------------------------------
         print "Filling Buffer please wait, Buffer size = %d s"%window
         fullbuff, x, y = lsl.Get_lsl(inlet, buff, Sz)  # Get 9x128 Matrix from LSL
         fullbuff = np.nan_to_num(fullbuff)
-        for i in range(0,x):
-            fullbuff[i,:] = (fullbuff[i,:]-base[i])
+        for j in range(0,x):
+            fullbuff[j,:] = (fullbuff[j,:]-base[j])
 
 #        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
         print "Buffer filled Preprocessing"

@@ -97,7 +97,7 @@ for j in range(0,y):
 for j in range(0,y):
     if mMatrix[8,j]==norm:
         if sliden == 0:
-            h["norm{0}".format(n)]=hMatrix[0:8,j:j+Sz]
+            h["norm{0}".format(n)]=mMatrix[0:8,j:j+Sz]
             n+=1
         else:
             for q in range(0,sliden):

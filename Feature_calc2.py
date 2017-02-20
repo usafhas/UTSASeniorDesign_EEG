@@ -367,56 +367,7 @@ def DLAT(M,Fs):
     D = np.append(dlat,dcau, axis=1)
     E = np.append(dlatp,dcaup, axis=1)
     return E
-#csd(x, y[, fs, window, nperseg, noverlap, ...])	Estimate the cross power spectral density, Pxy, using Welch’s method.
-#coherence(x, y[, fs, window, nperseg, ...])	Estimate the magnitude squared coherence estimate, Cxy, of discrete-time signals X and Y using Welch’s method.
-#%%  Function definitions copied from other libraries
-#import pyaudio
-#import wave
-#import sys
-#import os.path
-#import time
 
-CHUNK_SIZE = 1024
-
-def play_wav(wav_filename, chunk_size=CHUNK_SIZE):
-    '''
-    Play (on the attached system sound device) the WAV file
-    named wav_filename.
-    '''
-
-    try:
-        print 'Trying to play file ' + wav_filename
-        wf = wave.open(wav_filename, 'rb')
-    except IOError as ioe:
-        sys.stderr.write('IOError on file ' + wav_filename + '\n' + \
-        str(ioe) + '. Skipping.\n')
-        return
-    except EOFError as eofe:
-        sys.stderr.write('EOFError on file ' + wav_filename + '\n' + \
-        str(eofe) + '. Skipping.\n')
-        return
-
-    # Instantiate PyAudio.
-    p = pyaudio.PyAudio()
-
-    # Open stream.
-    stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-        channels=wf.getnchannels(),
-        rate=wf.getframerate(),
-                    output=True)
-
-    data = wf.readframes(chunk_size)
-    while len(data) > 0:
-        stream.write(data)
-        data = wf.readframes(chunk_size)
-
-    # Stop stream.
-    stream.stop_stream()
-    stream.close()
-
-    # Close PyAudio.
-    p.terminate()
-    return
 	
 def hfd(a, k_max):
 	# http://gilestrolab.github.io/pyrem/pyrem.univariate.html#pyrem.univariate.hfd
@@ -453,12 +404,6 @@ def hfd(a, k_max):
     N = a.size
 
 
-    # TODO this could be used to pregenerate k and m idxs ... but memory pblem?
-    # km_idxs = np.triu_indices(k_max - 1)
-    # km_idxs = k_max - np.flipud(np.column_stack(km_idxs)) -1
-    # km_idxs[:,1] -= 1
-    #
-
     for k in xrange(1,k_max):
         Lk = 0
         for m in xrange(0,k):
@@ -494,35 +439,6 @@ def istft(X, fs, T, hop):
       	
 #%% Unused Definitions / Unuseful =====================================================================================
 
-def Mpsd2(M,Fs):
-    psdf = []
-    psdx = []
-    psdf, psdx = signal.periodogram(M, Fs, axis=1)
-    
-    x,y = np.shape(psdx)
-    
-    for i in range (0,x):
-        temp1 = psdf[:]*(i+1)
-        temp2 = psdx[i,:]
-        if i == 0:
-                a = temp1
-                b = temp2
-        else:
-            a = np.append(a,temp1)
-            b = np.append(b,temp2)
-    psd = zip(a,b)
-#    psd = np.array(psd).T
-#    for i in range (0,x):
-#        a = zip(psdf[:]*(i+1),psdx[i,:])
-#        if i == 0:
-#            psd = a
-##            psd = psd[:,:, np.newaxis]
-#        else:
-##            psd = np.dstack((psd,a))
-#            psd = np.vstack((psd,a))
-##    psd = np.swapaxes(psd,1,0)    
-
-    return psd
 	
 def live_plot(ax, line1, line2, line3, line4, line5, line6,line7,line8, Live_matrix, t):
     """ This is the plotting function that will reside inside the infinite loop.  Using the lines obtained from

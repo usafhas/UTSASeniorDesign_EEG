@@ -55,33 +55,14 @@ def csize(buff):
     x,y = buff.shape
     return x,y
 #################################################################################
-#    test = np.empty((x,Fs-1,10))
-#    if y == Fs:
-def fillM(test,buff,x,i,Sz):
-    """ this function was to fill a test array with the buffer and append along a third axis, this is not used any longer
-    """
-    
-    test[0:x,0:Sz-1,i] = buff[0:x,0:Sz-1]
-    del buff
-    #chunktest, timestamp =inlet.pull_sample()
-         
-    return test
+
     
 def re(inlet):
     """ Reinitialized the buffer after deleting.  This ensures it is the appropriate data type, and creates a new 
     8x1 array to be filled again """
     buff, timestamp =inlet.pull_sample()
     return buff
-    
-    
-    # http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html
-def to_panda(test,i):
-    """ This creates a pandas dataframe from the input matrix with channel names """             
-    index = ['Fp1', 'Fp2', 'Fz', 'C3', 'C4', 'Pz', 'O1', 'O2', 'STI014']
-         
-    df = pd.DataFrame(test[:,:,i], index)
-         # DataFrame.as_matrix(columns=None)
-    return df
+
 #%% Used in Live Program
 def Get_lsl(inlet, buff, Sz):
     """ This function fills the buffer to specified size Sz

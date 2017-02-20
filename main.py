@@ -47,7 +47,7 @@ from sklearn.externals import joblib
 import numpy as np
 from pylsl import StreamInfo, StreamOutlet
 import pickle
-import Thread_test
+#import Thread_test
 from time import sleep
 from Queue import Queue
 from threading import Thread
