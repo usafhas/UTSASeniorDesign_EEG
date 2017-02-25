@@ -8,7 +8,7 @@ import numpy as np
 from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
-import Feature_calc # calculate features from LSL
+import Feature_calc2 as Feature_calc
 from sklearn.externals import joblib
 from sklearn.cross_validation import train_test_split
 import csv

@@ -222,18 +222,18 @@ def total_bandpower_perchannel(Live_matrix,Fs):
     """ take the abs_psd of each band, alpha, beta, delta, gamma and theta, and aggregate them into a vector that
     can be used as a feature for the classifier. """
     
-    Malph, Mbeta, Mdelta, Mgamma, Mtheta = alpha(Live_matrix,Fs)
+    Malph, Mbeta, Mdelta, Mgamma, Mtheta = bandPass_hamming(Live_matrix,Fs)
     psdfa, alphaa = Mpsd(Malph, Fs)
     psdfb, beta = Mpsd(Mbeta, Fs)
     psdfd, delta = Mpsd(Mdelta, Fs)
     psdfg, gamma = Mpsd(Mgamma, Fs)
     psdft, theta = Mpsd(Mtheta, Fs)
     
-    alphaabs, powera = absolueBandPower_PSD(alphaa)
-    betaabs, powerb = absolueBandPower_PSD(beta)
-    deltaabs, powerd = absolueBandPower_PSD(delta)
-    gammaabs, powerg = absolueBandPower_PSD(gamma)
-    thetaabs, powert = absolueBandPower_PSD(theta)
+    alphaabs, powera = absoluteBandPower_PSD(alphaa)
+    betaabs, powerb = absoluteBandPower_PSD(beta)
+    deltaabs, powerd = absoluteBandPower_PSD(delta)
+    gammaabs, powerg = absoluteBandPower_PSD(gamma)
+    thetaabs, powert = absoluteBandPower_PSD(theta)
     x,y = np.shape(Live_matrix)
     feature=np.zeros((1,8))
     """Make a 9x5 array, each row is a channel PSD, each column is a frequency band """
@@ -259,7 +259,7 @@ def abs_psd_alpha(Live_matrix,Fs):
     psdfa, alphaa = Mpsd(Malph, Fs)
 
     
-    alphaabs, powera = absolute_PSD(alphaa)
+    alphaabs, powera = absoluteBandPower_PSD(alphaa)
 
     x,y = np.shape(Live_matrix)
     feature=np.zeros((1,8))
