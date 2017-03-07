@@ -128,8 +128,8 @@ if __name__=="__main__": # Main loop -------------------------------------------
                 
             """ Open and Write JSON object """
             
-            f_buffer = open('./buffer.json', 'wb')
-            f_psd = open('./psd.json', 'wb')
+            f_buffer = open('./buffer.json', 'w')
+            f_psd = open('./psd.json', 'w')
             
             fullsum = np.sum(fullbuff, axis=0)  # collapse buffer channels to 1
 
