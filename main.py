@@ -60,15 +60,14 @@ window = 15
 clf = joblib.load('./SvCvN_W15_theta_sum.npy_QDA.pkl')
 print "classifier loaded"
 print "Imports Complete"
+
+
+
 #%%      
 """ ----------  Begin Main Loop of the program -----------------------------"""
 if __name__=="__main__": # Main loop ------------------------------------------------------------------------
     """ Initialize the LSL stream inlet in LSL_importchunk.py  """
     print "looking for LSL.........Start the LSL"
-    
-    #Run a random LSL stream for testing
-#    os.system("./LSL_Send_Random.py")
-    
     
     # initialize LSL grab
     inlet, buff = lsl.initialize_LSL()
@@ -105,13 +104,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     print("Baseline collected")
     
     Q = Queue(maxsize=20)
-#    for thr in range(0,20):
-#        inlet, buff = lsl.initialize_LSL()
-#        t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-#        t.daemon = True
-#        t.start()
-##        del buff
-#        sleep(1)
+
     while(True):
         inlet, buff = lsl.initialize_LSL()
         t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
@@ -132,12 +125,36 @@ if __name__=="__main__": # Main loop -------------------------------------------
             fullbuff = np.nan_to_num(fullbuff)
             for i in range(0,x):
                 fullbuff[i,:] = (fullbuff[i,:]-base[i])
-    
+                
+            """ Open and Write JSON object """
+            
+            f_buffer = open('./buffer.json', 'wb')
+            f_psd = open('./psd.json', 'wb')
+            
+            fullsum = np.sum(fullbuff, axis=0)  # collapse buffer channels to 1
+
+            f_buffer.write('{\n\"buffer\":[')
+            for n in fullsum:
+                f_buffer.write(str(n))
+                f_buffer.write(',')
+            f_buffer.write(']\n}')
+            
     #        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
             print "Buffer filled Preprocessing"
             live_M = Feature_calc.DEAP_process(fullbuff,Fs)
             Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
             alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
+            
+            
+            f_psd.write('{\n\"psd\":[')
+            for a in psdx:
+                for n in a:
+                    f_psd.write(str(n))
+                    f_psd.write(',')
+            f_psd.write(']\n}')
+        
+            f_buffer.close()
+            f_psd.close()
             
             """ Select Feature to calculate =================================================="""
     
@@ -152,10 +169,5 @@ if __name__=="__main__": # Main loop -------------------------------------------
             print "================================", iii, "=============================="
             iii+=1
     ## -------------------------------------------------------------------------------
-    #        del buff  # Delete buffer to save memory
-#            inlet, buff = lsl.initialize_LSL()
-#            t = Thread(target=lsl.Buffer_thread, args=(inlet,buff,Sz,Q))
-#            t.daemon = True
-#            t.start()
-##            del buff
+
         
