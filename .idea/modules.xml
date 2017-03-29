@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/UTSASeniorDesign_EEG.iml" filepath="$PROJECT_DIR$/.idea/UTSASeniorDesign_EEG.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/newMain/.idea/newMain.iml" filepath="$USER_HOME$/Desktop/newMain/.idea/newMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../eeg-demo/pyscripts/.idea/pyscripts.iml" filepath="$PROJECT_DIR$/../eeg-demo/pyscripts/.idea/pyscripts.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,7 @@
+spec = spectrogram_hanning
+
+alpha = bandPass_hamming
+
+absolute_PSD = absolueBandPower_PSD
+
+abs_psd_feature = total_bandpower_perchannel

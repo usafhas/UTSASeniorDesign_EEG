@@ -21,12 +21,24 @@ ________________________________________________________________________________
 This matrix is all of the 'y' values, the amplitude of the signals
 the 'x' is time, and is calculated by taking a range from 0 to Sz and dividing each by the sampling frequency
 
-C:\Users\Heath\Anaconda2\python.exe -m pip install
 
-C:\Users\Heath\Anaconda2\envs\SeniorDesign\python.exe -m pip install
+C:\\Users\Heath\Anaconda2\python.exe -m pip install
+
+C:\\Users\Heath\Anaconda2\envs\SeniorDesign\python.exe -m pip install
+
+pylsl
+
+scikit-learn
+scikit-fuzzy
+
+C:\\Users\Heath\Google Drive\\UTSA\05_Fall 16\Senior Design\EEG_Project_Code\CODENAME_Duthess\PeakUtils-1.0.3.tar\dist\PeakUtils-1.0.3\PeakUtils-1.0.3\
+python setup.py install
+
+C:\\Users\Heath\Anaconda2\pyeeg-master\pyeeg-master python setup.py install
 """
 from scipy import signal 
 import LSL_importchunk  as lsl# import file with functions to grab data via LSL
+# import EDF_MNE # file to import eeg data in edf
 import Feature_calc2 as Feature_calc #calculate features from LSL
 #import matplotlib.pyplot as plt
 from sklearn import svm
@@ -35,21 +47,25 @@ from sklearn.externals import joblib
 import numpy as np
 from pylsl import StreamInfo, StreamOutlet
 import pickle
+#import Thread_test
 from time import sleep
-from Queue import Queue
+from queue import Queue
 from threading import Thread
+#import sys
+#import os
+
+#%%
+""" ================================= begin setups ================================="""
+window = 15
+clf = joblib.load('./SvCvN_W15_theta_sum.npy_QDA.pkl')
+print("classifier loaded")
+print("Imports Complete")
+
+
 
 #%%      
 """ ----------  Begin Main Loop of the program -----------------------------"""
 if __name__=="__main__": # Main loop ------------------------------------------------------------------------
-    
-    #%%
-    """ ================================= begin setups ================================="""
-    window = 15
-    clf = joblib.load('./SvCvN_W15_theta_sum.npy_QDA.pkl')
-    print("classifier loaded")
-    print("Imports Complete")
-        
     """ Initialize the LSL stream inlet in LSL_importchunk.py  """
     print("looking for LSL.........Start the LSL")
     
@@ -112,77 +128,40 @@ if __name__=="__main__": # Main loop -------------------------------------------
                 
             """ Open and Write JSON object """
             
-            with open('./buffer.json', 'wb') as f_buffer:
-                fullsum = np.sum(fullbuff, axis=0)  # collapse buffer channels to 1
-                f_buffer.write('{\n\"Buffer\":[')
-                for n in fullsum:
-                    f_buffer.write(str(n))
-                    f_buffer.write(',')
-                f_buffer.write(']\n}')
+            f_buffer = open('./buffer.json', 'w')
+            f_psd = open('./psd.json', 'w')
             
-            
+            fullsum = np.sum(fullbuff, axis=0)  # collapse buffer channels to 1
+
+            f_buffer.write('{\n\"buffer\":[')
+            for n in fullsum:
+                f_buffer.write(str(n))
+                f_buffer.write(',')
+            f_buffer.write(']\n}')
             
     #        np.save('./Data/Training/Raw/BR8/buffer_W{0}'.format(window),fullbuff)
             print("Buffer filled Preprocessing")
             live_M = Feature_calc.DEAP_process(fullbuff,Fs)
             Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
             alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
-
-            with open('./psd.json', 'wb') as f_psd:
-                psdx_sum = np.sum(psdx, axis=0)
-                f_psd.write('{\n\"PSD\":[')
-                for a in psdx_sum:
-                    f_psd.write(str(a))
+            
+            
+            f_psd.write('{\n\"psd\":[')
+            for a in psdx:
+                for n in a:
+                    f_psd.write(str(n))
                     f_psd.write(',')
-                f_psd.write(']\n}')
-                
-            with open('./alpha.json', 'wb') as f_alpha:
-                f_alpha.write('{\n\"Alpha\":[')
-                for a in alpha:
-                    for n in a:
-                        f_alpha.write(str(n))
-                        f_alpha.write(',')
-                f_alpha.write(']\n}')
-                
-            with open('./beta.json', 'wb') as f_beta:
-                f_beta.write('{\n\"Beta\":[')
-                for a in beta:
-                    for n in a:
-                        f_beta.write(str(n))
-                        f_beta.write(',')
-                f_beta.write(']\n}')
-                
-            with open('./delta.json', 'wb') as f_delta:
-                f_delta.write('{\n\"Delta\":[')
-                for a in delta:
-                    for n in a:
-                        f_delta.write(str(n))
-                        f_delta.write(',')
-                f_delta.write(']\n}')
-                
-            with open('./gamma.json', 'wb') as f_gamma:
-                f_gamma.write('{\n\"Gamma\":[')
-                for a in gamma:
-                    for n in a:
-                        f_gamma.write(str(n))
-                        f_gamma.write(',')
-                f_gamma.write(']\n}')
-                
-            with open('./theta.json', 'wb') as f_theta:
-                f_theta.write('{\n\"Theta\":[')
-                for a in theta:
-                    for n in a:
-                        f_theta.write(str(n))
-                        f_theta.write(',')
-                f_theta.write(']\n}')
-
+            f_psd.write(']\n}')
+        
+            f_buffer.close()
+            f_psd.close()
             
             """ Select Feature to calculate =================================================="""
     
             feat = np.sum(theta,axis=0)
             """ ================================== Predict =============================="""
             
-            feat = feat.reshape(1,-1)
+            feat.reshape(-1,1)
             result = clf.predict(feat)
             outlet.push_sample(result)
             
@@ -190,3 +169,5 @@ if __name__=="__main__": # Main loop -------------------------------------------
             print("================================", iii, "==============================")
             iii+=1
     ## -------------------------------------------------------------------------------
+
+        
