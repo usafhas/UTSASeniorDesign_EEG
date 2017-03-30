@@ -149,7 +149,7 @@ def Mpsd(M,Fs):
     # https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.hanning.html#scipy.signal.hanning
 	# hanning(M[, sym])	Return a Hann window.
  
-    win = signal.get_window('hanning',4*Fs)
+    win = signal.get_window('hann',int(4*Fs))
     psdf, psdx = signal.welch(M,Fs,window = win,nperseg=4*Fs, noverlap = 2*Fs,axis=1)
     
     return psdf, psdx
