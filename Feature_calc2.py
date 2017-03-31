@@ -39,7 +39,7 @@ sklearn.cross_decomposition.CCA
 canonical cross correlation analysis
 """
 #%%
-from __future__ import division
+
 from scipy import signal
 from sklearn import preprocessing
 from sklearn import naive_bayes
@@ -60,7 +60,7 @@ from sklearn.decomposition import FastICA
 
 #%%  Preprocessing Steps
 def process_live(Live_matrix,Fs):
-    print "Processing the Data, What else may I do for you"
+    print("Processing the Data, What else may I do for you")
 
     Live_matrix = preprocess(Live_matrix, Fs)
     psdf1, psdx1 = Mpsd(Live_matrix, Fs) # PSD of the raw matrix, PSD values and frequency bins
@@ -404,9 +404,9 @@ def hfd(a, k_max):
     N = a.size
 
 
-    for k in xrange(1,k_max):
+    for k in range(1,k_max):
         Lk = 0
-        for m in xrange(0,k):
+        for m in range(0,k):
             #we pregenerate all idxs
             idxs = np.arange(1,int(np.floor((N-m)/k)),dtype=np.int32)
 
@@ -564,7 +564,7 @@ def grad_valarr(val,arous):
     pangry = np.sum(uang)
     phappy = np.sum(uhapp)
 
-    print "Percent angry = %f Percent happy = %f" %((pangry*100), (phappy*100))
+    print("Percent angry = %f Percent happy = %f" %((pangry*100), (phappy*100)))
 
     return (pangry*100), (phappy*100)
     

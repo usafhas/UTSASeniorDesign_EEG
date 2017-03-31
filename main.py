@@ -1,30 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Oct 07 14:32:23 2016
 
-@author: Heath
-
-Brain Rhythm 8 EEG Data
-
-Full Buffer = [9,128 or "Sz"]
-_________________________________________________________________________________________________
-'Fp1'_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'Fp2'_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'Fz' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'C3' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'C4' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'Pz' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'O1' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'O2' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-'STI014' _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
-
-This matrix is all of the 'y' values, the amplitude of the signals
-the 'x' is time, and is calculated by taking a range from 0 to Sz and dividing each by the sampling frequency
-
-C:\Users\Heath\Anaconda2\python.exe -m pip install
-
-C:\Users\Heath\Anaconda2\envs\SeniorDesign\python.exe -m pip install
-"""
 from scipy import signal 
 import LSL_importchunk  as lsl# import file with functions to grab data via LSL
 import Feature_calc2 as Feature_calc #calculate features from LSL
@@ -36,7 +11,7 @@ import numpy as np
 from pylsl import StreamInfo, StreamOutlet
 import pickle
 from time import sleep
-from Queue import Queue
+from queue import Queue
 from threading import Thread
 
 #%%      
@@ -104,7 +79,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
         Live_matrix is then High passed, Normalized, and PSD feature calculated and returned
         finally the buffer is deleted, and then reinitialized to be sent back in to be filled 
             """
-            print("Filling Buffer please wait, Buffer size = %d s"%window)
+            print(("Filling Buffer please wait, Buffer size = %d s"%window))
             fullbuff = Q.get()  # Get 9x128 Matrix from LSL
             fullbuff = np.nan_to_num(fullbuff)
             for i in range(0,x):
@@ -112,7 +87,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
                 
             """ Open and Write JSON object """
             
-            with open('./buffer.json', 'wb') as f_buffer:
+            with open('./buffer.json', 'w') as f_buffer:
                 fullsum = np.sum(fullbuff, axis=0)  # collapse buffer channels to 1
                 f_buffer.write('{\n\"Buffer\":[')
                 for n in fullsum:
@@ -128,7 +103,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
             Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
             alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
 
-            with open('./psd.json', 'wb') as f_psd:
+            with open('./psd.json', 'w') as f_psd:
                 psdx_sum = np.sum(psdx, axis=0)
                 f_psd.write('{\n\"PSD\":[')
                 for a in psdx_sum:
@@ -136,7 +111,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
                     f_psd.write(',')
                 f_psd.write(']\n}')
                 
-            with open('./alpha.json', 'wb') as f_alpha:
+            with open('./alpha.json', 'w') as f_alpha:
                 f_alpha.write('{\n\"Alpha\":[')
                 for a in alpha:
                     for n in a:
@@ -144,7 +119,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
                         f_alpha.write(',')
                 f_alpha.write(']\n}')
                 
-            with open('./beta.json', 'wb') as f_beta:
+            with open('./beta.json', 'w') as f_beta:
                 f_beta.write('{\n\"Beta\":[')
                 for a in beta:
                     for n in a:
@@ -152,7 +127,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
                         f_beta.write(',')
                 f_beta.write(']\n}')
                 
-            with open('./delta.json', 'wb') as f_delta:
+            with open('./delta.json', 'w') as f_delta:
                 f_delta.write('{\n\"Delta\":[')
                 for a in delta:
                     for n in a:
@@ -160,7 +135,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
                         f_delta.write(',')
                 f_delta.write(']\n}')
                 
-            with open('./gamma.json', 'wb') as f_gamma:
+            with open('./gamma.json', 'w') as f_gamma:
                 f_gamma.write('{\n\"Gamma\":[')
                 for a in gamma:
                     for n in a:
@@ -168,7 +143,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
                         f_gamma.write(',')
                 f_gamma.write(']\n}')
                 
-            with open('./theta.json', 'wb') as f_theta:
+            with open('./theta.json', 'w') as f_theta:
                 f_theta.write('{\n\"Theta\":[')
                 for a in theta:
                     for n in a:
@@ -186,8 +161,8 @@ if __name__=="__main__": # Main loop -------------------------------------------
             result = clf.predict(feat)
             outlet.push_sample(result)
             
-            print('I can see into the Future, I predict this to be ', result)
-            print("================================", iii, "==============================")
+            print(('I can see into the Future, I predict this to be ', result))
+            print(("================================", iii, "=============================="))
             # 1 = Stressed
             # 2 = Calm
             # 0 = Normal
