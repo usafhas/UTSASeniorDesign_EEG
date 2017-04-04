@@ -52,7 +52,12 @@ if __name__=="__main__": # Main loop -------------------------------------------
     print("Globals Declared")
     
     iii=0
-
+    
+    Norminfo = StreamInfo('UTSA', 'Raw', int(Sz), 1, 'float32', 'SD')
+    NomLSL = StreamOutlet(Norminfo)
+    Thetainfo = StreamInfo('UTSA', 'ThetaPSD', 257, 1, 'float32', 'SD')
+    ThetaLSL = StreamOutlet(Thetainfo)
+    
     # get data for baseline removeal
     print("Collecting window for baseline")
     BSz = 3*Fs # 3 second baseline
@@ -86,9 +91,11 @@ if __name__=="__main__": # Main loop -------------------------------------------
                 fullbuff[i,:] = (fullbuff[i,:]-base[i])
                 
             """ Open and Write JSON object """
-            
+            fullsum = np.sum(fullbuff, axis=0)
+            #NomLSL.push_sample(fullsum)
+            NomLSL.push_chunk(fullsum)
             with open('./buffer.json', 'w') as f_buffer:
-                fullsum = np.sum(fullbuff, axis=0)  # collapse buffer channels to 1
+                  # collapse buffer channels to 1
                 f_buffer.write('{\n\"Buffer\":[')
                 for n in fullsum:
                     f_buffer.write(str(n))
@@ -156,7 +163,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
     
             feat = np.sum(theta,axis=0)
             """ ================================== Predict =============================="""
-            
+            ThetaLSL.push_sample(feat)
             feat = feat.reshape(1,-1)
             result = clf.predict(feat)
             outlet.push_sample(result)
