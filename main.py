@@ -94,13 +94,13 @@ if __name__=="__main__": # Main loop -------------------------------------------
             fullsum = np.sum(fullbuff, axis=0)
             #NomLSL.push_sample(fullsum)
             NomLSL.push_chunk(fullsum)
-            with open('./buffer.json', 'w') as f_buffer:
-                  # collapse buffer channels to 1
-                f_buffer.write('{\n\"Buffer\":[')
-                for n in fullsum:
-                    f_buffer.write(str(n))
-                    f_buffer.write(',')
-                f_buffer.write(']\n}')
+#            with open('./buffer.json', 'w') as f_buffer:
+#                  # collapse buffer channels to 1
+#                f_buffer.write('{\n\"Buffer\":[')
+#                for n in fullsum:
+#                    f_buffer.write(str(n))
+#                    f_buffer.write(',')
+#                f_buffer.write(']\n}')
             
             
             
@@ -110,53 +110,53 @@ if __name__=="__main__": # Main loop -------------------------------------------
             Normalized, psdf, psdx = Feature_calc.process_live(live_M,Fs)
             alpha, beta, delta, gamma, theta = Feature_calc.Band_PSD(Normalized,Fs)
 
-            with open('./psd.json', 'w') as f_psd:
-                psdx_sum = np.sum(psdx, axis=0)
-                f_psd.write('{\n\"PSD\":[')
-                for a in psdx_sum:
-                    f_psd.write(str(a))
-                    f_psd.write(',')
-                f_psd.write(']\n}')
-                
-            with open('./alpha.json', 'w') as f_alpha:
-                f_alpha.write('{\n\"Alpha\":[')
-                for a in alpha:
-                    for n in a:
-                        f_alpha.write(str(n))
-                        f_alpha.write(',')
-                f_alpha.write(']\n}')
-                
-            with open('./beta.json', 'w') as f_beta:
-                f_beta.write('{\n\"Beta\":[')
-                for a in beta:
-                    for n in a:
-                        f_beta.write(str(n))
-                        f_beta.write(',')
-                f_beta.write(']\n}')
-                
-            with open('./delta.json', 'w') as f_delta:
-                f_delta.write('{\n\"Delta\":[')
-                for a in delta:
-                    for n in a:
-                        f_delta.write(str(n))
-                        f_delta.write(',')
-                f_delta.write(']\n}')
-                
-            with open('./gamma.json', 'w') as f_gamma:
-                f_gamma.write('{\n\"Gamma\":[')
-                for a in gamma:
-                    for n in a:
-                        f_gamma.write(str(n))
-                        f_gamma.write(',')
-                f_gamma.write(']\n}')
-                
-            with open('./theta.json', 'w') as f_theta:
-                f_theta.write('{\n\"Theta\":[')
-                for a in theta:
-                    for n in a:
-                        f_theta.write(str(n))
-                        f_theta.write(',')
-                f_theta.write(']\n}')
+#            with open('./psd.json', 'w') as f_psd:
+#                psdx_sum = np.sum(psdx, axis=0)
+#                f_psd.write('{\n\"PSD\":[')
+#                for a in psdx_sum:
+#                    f_psd.write(str(a))
+#                    f_psd.write(',')
+#                f_psd.write(']\n}')
+#                
+#            with open('./alpha.json', 'w') as f_alpha:
+#                f_alpha.write('{\n\"Alpha\":[')
+#                for a in alpha:
+#                    for n in a:
+#                        f_alpha.write(str(n))
+#                        f_alpha.write(',')
+#                f_alpha.write(']\n}')
+#                
+#            with open('./beta.json', 'w') as f_beta:
+#                f_beta.write('{\n\"Beta\":[')
+#                for a in beta:
+#                    for n in a:
+#                        f_beta.write(str(n))
+#                        f_beta.write(',')
+#                f_beta.write(']\n}')
+#                
+#            with open('./delta.json', 'w') as f_delta:
+#                f_delta.write('{\n\"Delta\":[')
+#                for a in delta:
+#                    for n in a:
+#                        f_delta.write(str(n))
+#                        f_delta.write(',')
+#                f_delta.write(']\n}')
+#                
+#            with open('./gamma.json', 'w') as f_gamma:
+#                f_gamma.write('{\n\"Gamma\":[')
+#                for a in gamma:
+#                    for n in a:
+#                        f_gamma.write(str(n))
+#                        f_gamma.write(',')
+#                f_gamma.write(']\n}')
+#                
+#            with open('./theta.json', 'w') as f_theta:
+#                f_theta.write('{\n\"Theta\":[')
+#                for a in theta:
+#                    for n in a:
+#                        f_theta.write(str(n))
+#                        f_theta.write(',')
+#                f_theta.write(']\n}')
 
             
             """ Select Feature to calculate =================================================="""
@@ -164,6 +164,7 @@ if __name__=="__main__": # Main loop -------------------------------------------
             feat = np.sum(theta,axis=0)
             """ ================================== Predict =============================="""
             ThetaLSL.push_sample(feat)
+            feat = feat[14:40] # Hz bins = 4*Hz
             feat = feat.reshape(1,-1)
             result = clf.predict(feat)
             outlet.push_sample(result)
